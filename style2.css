@@ -1,0 +1,53 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Corpo da página */
+body {
+    background-color: #295b9c; /* azul clarinho pro tema */
+    color: #2C3E50; /* cor principal da Big Shop */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container central */
+.conteudo {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+/* Título */
+.confirmacao h1 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #00796B; /* verde azulado pra chamar atenção */
+}
+
+/* Mensagem */
+.confirmacao p {
+    font-size: 1rem;
+    color: #2C3E50;
+}
+
+/* Mensagem de erro */
+.confirmacao p.erro {
+    color: #D32F2F; /* vermelho pra erro */
+    font-weight: bold;
+}
+
+/* Mensagem de sucesso */
+.confirmacao p.sucesso {
+    color: #388E3C; /* verde pro sucesso */
+    font-weight: bold;
+}

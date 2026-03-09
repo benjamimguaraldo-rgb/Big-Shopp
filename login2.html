@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Somos a BIG SHOPP, especializada em brindes corporativos personalizados, atendendo empresas que buscam fortalecer sua marca de forma criativa e eficiente. Desenvolvemos brindes para eventos, campanhas promocionais, ações institucionais, datas comemorativas e muito mais.">
+    <link rel="icon" type="image/png" href="https://media.discordapp.net/attachments/1404612523977609317/1479492504666505300/favicon-32x32.png?ex=69ac3c44&is=69aaeac4&hm=297febadb1679e0ca0ece643b9fbac02ae5a020de7b2aad0160e31d4c0b7e2ed&=&format=webp&quality=lossless">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://media.discordapp.net/attachments/1404612523977609317/1479492504666505300/favicon-32x32.png?ex=69ac3c44&is=69aaeac4&hm=297febadb1679e0ca0ece643b9fbac02ae5a020de7b2aad0160e31d4c0b7e2ed&=&format=webp&quality=lossless">
+    <link rel="icon" type="image/png" href="https://media.discordapp.net/attachments/1404612523977609317/1479492504666505300/favicon-32x32.png?ex=69ac3c44&is=69aaeac4&hm=297febadb1679e0ca0ece643b9fbac02ae5a020de7b2aad0160e31d4c0b7e2ed&=&format=webp&quality=lossless">
+    <link rel="stylesheet" href="style.css">
+    <title>Big Shop Login</title>
+</head>
+<body class="home">
+    <header class="headerprincipal">
+        <img src="https://media.discordapp.net/attachments/1404612523977609317/1479490657952202892/Captura_de_tela_2026-03-06_114707.png?ex=69ac3a8c&is=69aae90c&hm=d1e0386f0cc4088971b3a85d301e3c02da934d0ba09653f7d2e70d54e76e92dd&=&format=webp&quality=lossless"
+             alt="Logo Da Big Shop"
+             width="64px"
+             height="64px">
+             <h2>Big Shop</h2>
+
+          
+            <a href="home.html">
+               <button class="botao">🏠 Pagina Principal</button>
+            </a>
+
+
+            <a href="https://wa.me/5511922207487" target="_blank">
+                <button class="botao">📞 WhatsApp</button>
+            </a>
+
+             <a href=#>
+               <button class="botao">🛍️ Produtos</button>
+             </a>
+             <a href="#">
+                <button class="botao">🛒 Carrinho</button>
+             </a>
+
+
+             <a href="#">
+                <button class="botao">📦 Meus Pedidos</button>
+             </a>
+    </header>
+
+    <main class="conteudo">
+        <div class="cadastro">
+           <div class="campo-grupo">
+             <label for="email">Digite Seu Email : </label>
+             <input type="email" id="email" name="email" placeholder="example@email.com" required>
+           </div>
+
+           <div class="campo-grupo">
+            <label for="token">Seu Token : </label>
+            <input type="text" id="token" name="token" placeholder="seu token aqui" required>
+           </div>
+             
+            <button class="botao3" id="logbutton">Logar</button>
+           
+
+        <p>não tem uma conta?</p>
+        <a href="login.html">Criar uma Conta</a>
+        </div>
+    </main>
+
+
+
+    <script>
+    const logButton = document.getElementById('logbutton');
+
+    logButton.addEventListener('click', async () => {
+        const email = document.getElementById('email').value.trim();
+        const token = document.getElementById('token').value.trim();
+
+        // Validação simples
+        if (!email || !token) {
+            alert("❌ Por favor, preencha tanto o E-mail quanto o Token!");
+            return;
+        }
+
+        try {
+            const resposta = await fetch('http://127.0.0.1:5000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, token })
+            });
+
+            const dados = await resposta.json();
+
+            if (dados.sucesso) {
+                alert(dados.mensagem);
+                // Redireciona para a página principal depois do login
+                window.location.href = "home.html";
+            } else {
+                alert("❌ " + dados.mensagem);
+            }
+        } catch (err) {
+            console.error("Erro:", err);
+            alert("Não foi possível conectar ao servidor.\nVerifique se o Python está rodando na porta 5000.");
+        }
+    });
+    </script>
+</body>
+</html>

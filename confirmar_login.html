@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Login - Big Shopp</title>
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+    <main class="conteudo">
+        <div class="confirmacao">
+            <h1>Confirmando login...</h1>
+            <p id="mensagem">Aguarde, estamos verificando seu token.</p>
+        </div>
+    </main>
+
+    <script>
+        async function confirmarLogin() {
+            // Pega o token da URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (!token) {
+                document.getElementById('mensagem').innerText = "Token não encontrado!";
+                return;
+            }
+
+            try {
+                // Envia para o Flask verificar
+                const resposta = await fetch(`http://127.0.0.1:5000/confirmar_login?token=${token}`);
+                const dados = await resposta.json();
+
+                if (dados.sucesso) {
+                    document.getElementById('mensagem').innerText = "Login confirmado! Redirecionando...";
+                    
+                    // Salva no localStorage que o usuário está logado
+                    localStorage.setItem('usuario-cadastrado', dados.email);
+                    
+                    // Redireciona pra home depois de 2s
+                    setTimeout(() => window.location.href = "home.html", 2000);
+                } else {
+                    document.getElementById('mensagem').innerText = "Token inválido ou expirado!";
+                }
+            } catch (err) {
+                document.getElementById('mensagem').innerText = "Erro ao confirmar login.";
+                console.error(err);
+            }
+        }
+
+        confirmarLogin();
+    </script>
+</body>
+</html>

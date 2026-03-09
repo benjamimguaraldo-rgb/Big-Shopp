@@ -1,0 +1,184 @@
+.home {
+    background-color: #3a5269;
+    color: #ffffff;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    text-align: left;
+}
+
+.headerprincipal {
+    background-color: #3d566e;
+    color: #ffffff;
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center; 
+    padding: 10px 20px;
+    box-sizing: border-box;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: 100px;
+    gap: 20px;
+}
+
+.botao {
+    background-color: #105daa;
+    color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 75, 0.3);
+    transition: 0.5s;
+    padding: 10 15px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 20px;
+}
+
+.botao:hover {
+    background-color: #0c4d8d;
+    transform: scale(1.12);
+}
+
+.botao:active {
+    background-color: #105daa;
+    transform: scale(0.95);
+    box-shadow: 0px 3px 5px rgba(0, 0, 75, 0.3);
+}
+
+.h1 {
+    color: #ffffff;
+    text-align: center;
+    width: 100%;
+    font-size: 48px;
+}
+
+.conteudo {
+    padding-top: 130px;
+    width: 100%;       
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+}
+
+.container {
+    width: 90%;            
+    max-width: 1200px;     
+    margin: 0 auto;      
+    padding: 20px 0;       
+    display: flex;
+    /* Aqui garantimos que o container alinhe os produtos na esquerda */
+    justify-content: flex-start; 
+}
+
+.produtodestaque {
+    display: flex;
+    flex-direction: row; /* Imagem e Caixa de Texto lado a lado */
+    align-items: center; 
+    gap: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.texto-produto {
+    display: flex;
+    flex-direction: column; /* Título em cima, Parágrafo embaixo */
+    align-items: flex-start; /* Alinha o texto à esquerda dentro da caixa */
+}
+
+/* Garante que o texto seja visível no fundo branco */
+.texto-produto h3, .texto-produto p, .texto-produto h4 {
+    color: #0652c4;
+    margin: 5px 0;
+}
+
+.botao2 {
+    background-color: #105daa;
+    color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 75, 0.3);
+    transition: 0.5s;
+    padding: 10 15px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 35px;
+}
+
+.botao2:hover {
+    background-color: #0c4d8d;
+    transform: scale(1.12);
+}
+
+.botao2:active {
+    background-color: #105daa;
+    transform: scale(0.95);
+    box-shadow: 0px 3px 5px rgba(0, 0, 75, 0.3);
+}
+
+.cadastro {           /* Cria um espaço uniforme entre os campos sem precisar de tantos <br> */
+    
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px; /* Espaço entre o Título e os Blocos de campos */
+    padding: 30px;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 400px;
+    color: #04142e;
+}
+
+.campo-grupo {
+    display: flex;
+    flex-direction: column; /* Label em cima do Input */
+    align-items: flex-start; /* Alinha o texto do label na esquerda do input */
+    gap: 5px; /* Espaço pequeno entre label e input */
+    width: 100%;
+    max-width: 300px;
+}
+
+/* Dica para o input ficar bonitão */
+.cadastro input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 100%;            /* Faz o campo ocupar a largura da div */
+    max-width: 300px;
+}
+
+.campo-grupo label {
+    font-weight: bold;
+    font-size: 14px;
+    color: #04142e;
+}
+
+.botao3 {
+    background-color: #105daa;
+    color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 75, 0.3);
+    transition: 0.5s;
+    padding: 10 15px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 25px;
+}
+
+.botao3:hover {
+    background-color: #0c4d8d;
+    transform: scale(1.12);
+}
+
+.botao3:active {
+    background-color: #105daa;
+    transform: scale(0.95);
+    box-shadow: 0px 3px 5px rgba(0, 0, 75, 0.3);
+}
+

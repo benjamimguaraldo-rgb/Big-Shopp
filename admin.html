@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Big Shop - Painel Admin</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .form-container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin-bottom: 30px; }
+        input, textarea { width: 100%; margin: 10px 0; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: #28a745; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
+        button.btn-delete { background: #dc3545; }
+        table { width: 100%; background: white; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        img { width: 50px; }
+    </style>
+</head>
+<body>
+    <h1>📦 Gerenciar Produtos</h1>
+
+    <div class="form-container">
+        <h3>Novo Produto</h3>
+        <input type="text" id="nome" placeholder="Nome do Produto">
+        <textarea id="descricao" placeholder="Descrição"></textarea>
+        <input type="number" id="preco" placeholder="Preço (Ex: 99.90)">
+        <input type="text" id="imagem" placeholder="URL da Imagem">
+        <button onclick="salvarProduto()">Salvar Produto</button>
+    </div>
+
+    <h2>Produtos Cadastrados</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-produtos">
+            </tbody>
+    </table>
+
+    <script src="admin.js"></script>
+</body>
+</html>
