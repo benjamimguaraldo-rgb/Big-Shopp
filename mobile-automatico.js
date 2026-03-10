@@ -1,64 +1,44 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Função para detectar mobile (user agent + largura da tela)
+/**
+ * mobile.js – Detecção e ajustes para modo mobile
+ * - Adiciona classe 'modo-mobile' ao <body> quando necessário
+ * - Remove a classe em desktop
+ * - Reage a redimensionamento da janela
+ */
+(function() {
+    'use strict';
+
+    // 1. Função que detecta se é um dispositivo móvel
     function isMobileDevice() {
-        const userAgentMatch = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const widthMatch = window.innerWidth <= 768;
-        return userAgentMatch || widthMatch;
+        // User agents mobile comuns
+        const mobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+        // Retorna true se for mobile OU largura da tela <= 768px
+        return mobileUA.test(navigator.userAgent) || window.innerWidth <= 768;
     }
 
-    // Função que aplica transformações no DOM quando em mobile
-    function applyMobileTransformations() {
-        if (!document.body.classList.contains('modo-mobile')) return;
-
-        // 1. Seleciona elementos que tenham pelo menos 2 filhos diretos (qualquer tipo)
-        const elementosComFilhos = document.querySelectorAll('body *');
-        
-        elementosComFilhos.forEach(el => {
-            // Verifica se o elemento tem pelo menos 2 filhos diretos (incluindo texto? vamos considerar elementos HTML)
-            // Para evitar textos isolados, contamos apenas children (nós de elemento)
-            const filhos = Array.from(el.children).filter(child => child.nodeType === 1); // apenas elementos
-            if (filhos.length >= 2) {
-                el.classList.add('container-mobile-auto');
-            } else {
-                // Remove a classe se não tiver mais 2 filhos (para casos de redimensionamento/dinâmico)
-                el.classList.remove('container-mobile-auto');
-            }
-        });
-
-        // 2. Força redimensionamento de imagens e textos já cobertos pelo CSS
-    }
-
-    // Função principal que ativa/desativa modo mobile
-    function toggleMobileMode() {
-        const isMobile = isMobileDevice();
-        
-        if (isMobile) {
-            document.body.classList.add('modo-mobile');
-            console.log("📱 Modo Mobile Ativado");
-            applyMobileTransformations();
+    // 2. Atualiza a classe no <body> conforme o resultado
+    function updateMobileClass() {
+        const body = document.body;
+        if (isMobileDevice()) {
+            body.classList.add('modo-mobile');
+            body.classList.remove('modo-desktop');
+            console.log('📱 Modo mobile ativado (largura: ' + window.innerWidth + 'px)');
         } else {
-            document.body.classList.remove('modo-mobile');
-            // Remove classes automáticas
-            document.querySelectorAll('.container-mobile-auto').forEach(el => {
-                el.classList.remove('container-mobile-auto');
-            });
-            console.log("💻 Modo Desktop Ativado");
+            body.classList.remove('modo-mobile');
+            body.classList.add('modo-desktop');
+            console.log('💻 Modo desktop ativado (largura: ' + window.innerWidth + 'px)');
         }
     }
 
-    // Executa no carregamento
-    toggleMobileMode();
+    // 3. Executa imediatamente (caso o DOM já esteja carregado)
+    updateMobileClass();
 
-    // Observa mudanças no DOM (para elementos adicionados dinamicamente)
-    const observer = new MutationObserver(() => {
-        if (document.body.classList.contains('modo-mobile')) {
-            applyMobileTransformations();
-        }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
+    // 4. Executa quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', updateMobileClass);
 
-    // Reage ao redimensionamento da tela
-    window.addEventListener('resize', () => {
-        toggleMobileMode();
+    // 5. Executa com debounce no redimensionamento da janela
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(updateMobileClass, 150);
     });
-});
+})();

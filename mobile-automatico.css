@@ -1,63 +1,92 @@
-/* Ajuste global */
+/**
+ * mobile.css – Estilos para modo mobile
+ * - Apenas ajustes essenciais: respiro no topo, tipografia, botões, imagens
+ * - Header protegido contra transformações indevidas
+ * - Grid opcional comentado para áreas específicas
+ */
+ 
+/* 1. Respiro global (ajuste a altura conforme seu header) */
 body.modo-mobile {
     margin-top: 80px !important;
 }
 
+/* 2. Box-sizing consistente */
 body.modo-mobile * {
     box-sizing: border-box;
 }
 
-/* Todos os elementos que o JS marcou com a classe 'container-mobile-auto' viram grid */
-body.modo-mobile .container-mobile-auto {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
-    padding: 10px !important;
-}
-
-/* Os filhos diretos desses containers são os itens do grid */
-body.modo-mobile .container-mobile-auto > * {
-    width: 100% !important;
-    padding: 5px !important;
-    box-sizing: border-box !important;
-}
-
-/* Imagens */
-body.modo-mobile img {
-    max-width: 100%;
-    height: auto;
-    max-height: 120px;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-}
-
-/* Tipografia */
+/* 3. Tipografia fluida com clamp */
 body.modo-mobile h1 {
-    font-size: 1.2rem !important;
+    font-size: clamp(1.5rem, 5vw, 2rem) !important;
 }
-body.modo-mobile h2,
+body.modo-mobile h2 {
+    font-size: clamp(1.3rem, 4vw, 1.8rem) !important;
+}
 body.modo-mobile h3 {
-    font-size: 1rem !important;
+    font-size: clamp(1.1rem, 3.5vw, 1.5rem) !important;
 }
 body.modo-mobile p,
+body.modo-mobile li,
 body.modo-mobile span,
+body.modo-mobile a:not(nav a) {
+    font-size: clamp(0.95rem, 3vw, 1.1rem) !important;
+}
+
+/* 4. Botões com área de toque ampliada */
 body.modo-mobile button,
-body.modo-mobile a {
-    font-size: 0.875rem !important;
-}
-
-/* Botões */
-body.modo-mobile button {
+body.modo-mobile .btn,
+body.modo-mobile input[type="button"],
+body.modo-mobile input[type="submit"],
+body.modo-mobile a.button {
     min-height: 44px;
-    padding: 12px 10px !important;
+    padding: 12px 20px !important;
     font-size: 1rem !important;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
 }
 
-body.modo-mobile a {
-    display: inline-block;
-    padding: 8px 0;
+/* 5. Imagens responsivas */
+body.modo-mobile img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block;
 }
+
+/* 6. Header e navegação protegidos (mantém flex, sem grid) */
+body.modo-mobile header,
+body.modo-mobile nav,
+body.modo-mobile .header,
+body.modo-mobile #header {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center;
+    gap: 10px;
+    margin: 0 !important;
+    padding: 10px !important;
+    grid-template-columns: none !important;
+}
+
+/* 7. Ajuste opcional para listas */
+body.modo-mobile ul,
+body.modo-mobile ol {
+    padding-left: 20px !important;
+}
+
+/* 8. (OPCIONAL) Grid automático para áreas específicas
+   Descomente e ajuste os seletores conforme seu site.
+   Exemplo: se sua seção de habilidades tem classe "skills", 
+   ela se tornará um grid de 2 colunas.
+*/
+/*
+body.modo-mobile .skills,
+body.modo-mobile .linguagens,
+body.modo-mobile .projetos,
+body.modo-mobile .cards-container,
+body.modo-mobile div[class*="grid"] {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px !important;
+}
+*/
