@@ -145,6 +145,39 @@ def listar_produtos():
     conn.close()
     return jsonify([{"id": p[0], "nome": p[1], "descricao": p[2], "preco": p[3], "imagem": p[4]} for p in dados])
 
+
+# ====================== ROTAS DE ADMINISTRAÇÃO ======================
+
+@app.route('/criar_produto', methods=['POST'])
+def criar_produto():
+    dados = request.get_json()
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO produtos (nome, descricao, preco, imagem) VALUES (?, ?, ?, ?)",
+                       (dados['nome'], dados['descricao'], dados['preco'], dados['imagem']))
+        conn.commit()
+        conn.close()
+        return jsonify({"sucesso": True}), 201
+    except Exception as e:
+        return jsonify({"sucesso": False, "erro": str(e)}), 400
+
+@app.route('/deletar_produto/<int:id>', methods=['DELETE', 'OPTIONS'])
+def deletar_produto(id):
+    # O método OPTIONS é importante para o CORS (navegador) liberar o DELETE
+    if request.method == 'OPTIONS':
+        return jsonify({"status": "ok"}), 200
+        
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM produtos WHERE id = ?", (id,))
+        conn.commit()
+        conn.close()
+        return jsonify({"sucesso": True, "mensagem": "Produto removido!"}), 200
+    except Exception as e:
+        return jsonify({"sucesso": False, "erro": str(e)}), 500
+
 if __name__ == '__main__':
     init_db()
     port = int(os.environ.get("PORT", 5000))
