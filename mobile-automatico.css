@@ -1,0 +1,63 @@
+/* Ajuste global */
+body.modo-mobile {
+    margin-top: 80px !important;
+}
+
+body.modo-mobile * {
+    box-sizing: border-box;
+}
+
+/* Todos os elementos que o JS marcou com a classe 'container-mobile-auto' viram grid */
+body.modo-mobile .container-mobile-auto {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 10px !important;
+}
+
+/* Os filhos diretos desses containers são os itens do grid */
+body.modo-mobile .container-mobile-auto > * {
+    width: 100% !important;
+    padding: 5px !important;
+    box-sizing: border-box !important;
+}
+
+/* Imagens */
+body.modo-mobile img {
+    max-width: 100%;
+    height: auto;
+    max-height: 120px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Tipografia */
+body.modo-mobile h1 {
+    font-size: 1.2rem !important;
+}
+body.modo-mobile h2,
+body.modo-mobile h3 {
+    font-size: 1rem !important;
+}
+body.modo-mobile p,
+body.modo-mobile span,
+body.modo-mobile button,
+body.modo-mobile a {
+    font-size: 0.875rem !important;
+}
+
+/* Botões */
+body.modo-mobile button {
+    min-height: 44px;
+    padding: 12px 10px !important;
+    font-size: 1rem !important;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+body.modo-mobile a {
+    display: inline-block;
+    padding: 8px 0;
+}
