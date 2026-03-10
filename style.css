@@ -182,3 +182,77 @@
     box-shadow: 0px 3px 5px rgba(0, 0, 75, 0.3);
 }
 
+
+/* Estilo do container principal */
+.lista-carrinho {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Cada linha de produto no carrinho */
+.item-carrinho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.item-carrinho:last-child {
+    border-bottom: none;
+}
+
+/* Miniatura da imagem */
+.item-carrinho img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Nome e preço */
+.item-carrinho p {
+    flex-grow: 1;
+    margin: 0 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Botão de remover */
+.item-carrinho button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.item-carrinho button:hover {
+    background-color: #cc0000;
+    transform: scale(1.1);
+}
+
+/* Resumo do Total */
+.resumo-carrinho {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    background: #f9f9f9;
+}
+
+.btn-finalizar {
+    background-color: #28a745;
+    color: white;
+    font-size: 1.2rem;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}

@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" href="imagens/favicon.png">
     <link rel="icon" type="image/png" href="imagens/inox.png">
     <link rel="icon" type="image/png" href="imagens/logo.png">
-    <title>Big Shop Home</title>
+    <title>Big Shopp Carrinho</title>
 </head>
 <body class="home">
     <header class="headerprincipal">
@@ -26,8 +26,8 @@
              <a href=produtos.html>
                <button class="botao">🛍️ Produtos</button>
              </a>
-             <a href="carrinho.html">
-                <button class="botao">🛒 Carrinho</button>
+             <a href="home.html">
+                <button class="botao">Pagina Principal</button>
              </a>
 
 
@@ -35,35 +35,17 @@
                 <button class="botao">📦 Meus Pedidos</button>
              </a>
     </header>
-    
-    <main class="conteudo">
-    <section class="section">
-        <h1>Big Shop</h1>
-        <h2>Produtos Em Destaque : </h2>
-    <div class="container">
-        
 
-        <div class="produtodestaque">
-            
-            <img src="imagens/inox.png"
-                 alt="Copo Inox Com Sua Logo"
-                 width="300"
-                 height="200">
-
-            <div class="texto-produto">
-                <h3>Copo Inox Com Sua Logo</h3>
-                <p>Este copo mantém as temperaturas da sua bebida<br> 
-                um bom brinde para sua empresa, festa, entre outros!</p>
-                <h4>R$60</h5>
-                
-                <a href="#">
-                    <button class="botao2">Ver produto</button>
-                </a>
-            </div>
-            
+    <main>
+    <h2>Seu Carrinho 🛒</h2>
+    <div id="lista-carrinho" class="lista-carrinho">
         </div>
-        </div>
-</section>
-</main>
+    <div class="resumo-carrinho">
+        <h3>Total: R$ <span id="valor-total">0.00</span></h3>
+        <button onclick="finalizarCompra()" id="btn-finalizar" class="btn-finalizar">Ir para o Pagamento 💳</button>
+        <a href="produtos.html">Continuar Comprando</a>
+    </div>
+    </main>
+    <script src="js/carrinho.js"></script>
 </body>
 </html>
