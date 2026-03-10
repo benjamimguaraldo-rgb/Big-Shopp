@@ -1,0 +1,41 @@
+/* Isso vale para o SITE INTEIRO quando o JS detectar mobile */
+body.modo-mobile {
+    margin-top: 80px !important; /* Ajuste global de respiro */
+}
+
+/* 1. ESTRUTURA AUTOMÁTICA (Qualquer lugar com itens vira 2 colunas) */
+body.modo-mobile div:has(> div:nth-child(2)) {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 10px !important;
+}
+
+/* 2. ITENS ADAPTADOS (Qualquer caixa interna encolhe) */
+body.modo-mobile div:has(> div:nth-child(2)) > div {
+    width: 100% !important;
+    padding: 5px !important;
+    box-sizing: border-box !important;
+}
+
+/* 3. MÍDIA E TEXTO REDUZIDOS */
+body.modo-mobile img {
+    max-height: 110px !important;
+    object-fit: contain !important;
+}
+
+body.modo-mobile h1, 
+body.modo-mobile h2, 
+body.modo-mobile h3 {
+    font-size: 14px !important;
+}
+
+body.modo-mobile p, 
+body.modo-mobile span, 
+body.modo-mobile button {
+    font-size: 11px !important;
+}
+
+body.modo-mobile button {
+    padding: 10px 5px !important;
+}

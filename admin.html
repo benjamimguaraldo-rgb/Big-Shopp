@@ -2,12 +2,15 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="global.css">
     <title>Big Shop - Painel Admin</title>
     <style>
         body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
         .form-container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin-bottom: 30px; }
         input, textarea { width: 100%; margin: 10px 0; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        button { background: #28a745; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
+        button { background: #0084ff; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
+        button:hover {background-color: #003e79;}
+        button:active {background-color: #0084ff;}
         button.btn-delete { background: #dc3545; }
         table { width: 100%; background: white; border-collapse: collapse; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
@@ -41,5 +44,6 @@
     </table>
 
     <script src="admin.js"></script>
+    <script src="global.js"></script>
 </body>
 </html>

@@ -126,7 +126,7 @@ def confirmar_email():
         <html>
             <script>
                 alert('Login confirmado para {usuario[0]}! Redirecionando...');
-                window.location.href = "https://benjamimguaraldo-rgb.github.io/Big-Shopp/produtos.html";
+                window.location.href = "https://benjamimguaraldo-rgb.github.io/Big-Shopp/home.html";
             </script>
             <body><h1>Confirmado!</h1></body>
         </html>
