@@ -27,7 +27,7 @@
 
             try {
                 // Envia para o Flask verificar
-                const resposta = await fetch(`http://127.0.0.1:5000/confirmar_login?token=${token}`);
+                const resposta = await fetch(`https://big-shopp.onrender.com/confirmar_login?token=${token}`);
                 const dados = await resposta.json();
 
                 if (dados.sucesso) {

@@ -12,7 +12,7 @@ casButton.addEventListener('click', async () => {
     }
 
     try {
-        const resposta = await fetch('http://127.0.0.1:5000/cadastrar_usuario', {
+        const resposta = await fetch('https://big-shopp.onrender.com/cadastrar_usuario', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome, email, cpf, endereco })
