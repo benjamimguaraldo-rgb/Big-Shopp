@@ -27,33 +27,52 @@ function desativarBloqueio() {
 }
 
 async function verificarSenha() {
+    console.log("🚨 FUNÇÃO verificarSenha FOI CHAMADA!");
+    
     const senha = document.getElementById('senhaInput').value;
+    console.log("📝 Senha digitada:", senha);
     
     if (!senha) {
+        console.log("⚠️ Senha vazia!");
         mostrarErro('Digite a senha!');
         return;
     }
     
+    console.log("📡 API URL:", API);
+    console.log("📡 Chamando:", `${API}/verificar_senha`);
+    
     try {
+        console.log("⏳ Enviando requisição...");
+        
         const response = await fetch(`${API}/verificar_senha`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
             body: JSON.stringify({ senha: senha })
         });
         
+        console.log("📨 STATUS DA RESPOSTA:", response.status);
+        console.log("📨 HEADERS:", response.headers);
+        
         const data = await response.json();
+        console.log("📦 DADOS RECEBIDOS:", data);
         
         if (data.sucesso) {
-            // Senha correta! Libera a página
+            console.log("✅ ACESSO LIBERADO!");
             desativarBloqueio();
-            carregarProdutosAdmin(); // Carrega os produtos só depois de liberar
+            carregarProdutosAdmin();
         } else {
+            console.log("❌ SENHA INCORRETA!");
             mostrarErro('🔒 Senha incorreta!');
             document.getElementById('senhaInput').value = '';
             document.getElementById('senhaInput').focus();
         }
     } catch (error) {
-        mostrarErro('Erro ao verificar senha. Tente novamente.');
+        console.log("💥 ERRO CATASTRÓFICO:");
+        console.error(error);
+        mostrarErro('Erro: ' + error.message);
     }
 }
 
