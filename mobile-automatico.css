@@ -99,7 +99,7 @@ body.modo-mobile ol {
    IMPORTANTE: Isso só será aplicado se você descomentar e ajustar.
    Por padrão, está desativado para não causar problemas.
 */
-/*
+
 body.modo-mobile .skills,
 body.modo-mobile .linguagens,
 body.modo-mobile .projetos,
@@ -109,4 +109,3 @@ body.modo-mobile div[class*="grid"] {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 15px !important;
 }
-*/
