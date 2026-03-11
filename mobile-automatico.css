@@ -1,17 +1,70 @@
 /**
- * mobile.css – Modo mobile sem viewport
- * Versão 1.6.1 - Zoom reduzido para tamanho confortável
+ * mobile.css – Modo mobile com DRAGBAR HORIZONTAL
  */
 
-/* Tamanho base ajustado de 24px para 20px */
+/* Tamanho base */
 body.modo-mobile {
-    font-size: 20px !important;
+    font-size: 18px !important;
     line-height: 1.4 !important;
     max-width: 100vw !important;
     overflow-x: hidden !important;
+    transition: padding-left 0.1s ease; /* Suaviza movimento horizontal */
+    padding-left: 0px; /* Inicial */
 }
 
-/* Headers */
+/* HEADER PRECISA TER POSIÇÃO RELATIVA */
+body.modo-mobile .headerprincipal {
+    position: relative !important; /* Importante pra dragbar absoluta */
+}
+
+/* DRAGBAR HORIZONTAL */
+body.modo-mobile .horizontal-drag-bar {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 60px;
+    background: rgba(61, 86, 110, 0.8); /* #3d566e com transparência */
+    cursor: ew-resize; /* Seta leste-oeste (horizontal) */
+    border-radius: 10px 0 0 10px;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    transition: background 0.2s, height 0.2s;
+    z-index: 1001;
+}
+
+/* Ícone indicador (listras) */
+body.modo-mobile .horizontal-drag-bar::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 15px;
+    width: 4px;
+    height: 30px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+}
+
+/* Estado arrastando */
+body.modo-mobile .horizontal-drag-bar.dragging {
+    background: #2c3e50;
+    height: 80px;
+    width: 12px;
+}
+
+/* Efeito hover */
+body.modo-mobile .horizontal-drag-bar:hover {
+    background: #4a6a8a;
+    height: 70px;
+}
+
+/* BOTÕES E ELEMENTOS SE ADAPTAM */
+body.modo-mobile .headerprincipal {
+    transition: padding-right 0.1s ease;
+}
+
+/* Restante dos estilos (tipografia, botões, etc) */
 body.modo-mobile h1 {
     font-size: 2.2em !important;
 }
@@ -21,72 +74,20 @@ body.modo-mobile h2 {
 body.modo-mobile h3 {
     font-size: 1.5em !important;
 }
-body.modo-mobile h4,
-body.modo-mobile h5,
-body.modo-mobile h6 {
-    font-size: 1.2em !important;
-}
-
-/* Textos comuns */
 body.modo-mobile p,
 body.modo-mobile li,
-body.modo-mobile span,
-body.modo-mobile div {
+body.modo-mobile span {
     font-size: 1em !important;
 }
 
-/* Botões - ajustados */
 body.modo-mobile button,
-body.modo-mobile .btn,
-body.modo-mobile input[type="button"],
-body.modo-mobile input[type="submit"],
-body.modo-mobile a.button {
+body.modo-mobile .botao {
     font-size: 1.1em !important;
-    padding: 0.6em 1.2em !important;
-    min-height: 2.5em !important;
-    min-width: 6em !important;
-    white-space: normal !important;
+    padding: 10px 16px !important;
+    min-height: 44px !important;
 }
 
-/* Links */
-body.modo-mobile a {
-    font-size: 1em !important;
-    padding: 0.3em 0 !important;
-    display: inline-block;
-}
-
-/* Inputs e formulários */
-body.modo-mobile input,
-body.modo-mobile select,
-body.modo-mobile textarea {
-    font-size: 1.1em !important;
-    padding: 0.5em !important;
-}
-
-/* Imagens */
 body.modo-mobile img {
     max-width: 100% !important;
     height: auto !important;
-}
-
-/* Header e navegação */
-body.modo-mobile header,
-body.modo-mobile nav,
-body.modo-mobile .header,
-body.modo-mobile #header {
-    font-size: 1em !important;
-}
-
-/* Footer */
-body.modo-mobile footer,
-body.modo-mobile .footer,
-body.modo-mobile #footer {
-    font-size: 0.9em !important;
-}
-
-/* Garantias */
-body.modo-mobile * {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    word-wrap: break-word !important;
 }

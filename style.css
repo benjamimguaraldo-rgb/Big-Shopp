@@ -9,7 +9,7 @@
 }
 
 .headerprincipal {
-    background-color: #3d566e;
+    background-color: #406385;
     color: #ffffff;
     display: flex;
     justify-content: flex-start; 
@@ -21,7 +21,7 @@
     top: 0;
     left: 0;
     z-index: 1000;
-    height: 100px;
+    height: 100px;  /* Altura fixa em desktop */
     gap: 20px;
 }
 
