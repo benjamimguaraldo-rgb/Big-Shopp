@@ -162,15 +162,23 @@ def criar_produto():
     except Exception as e:
         return jsonify({"sucesso": False, "erro": str(e)}), 400
 
-@app.route('/deletar_produto/<int:id>', methods=['DELETE', 'OPTIONS'])
+@app.route('/deletar_produto/<int:id>', methods=['DELETE'])
 def deletar_produto(id):
-    # O método OPTIONS é importante para o CORS (navegador) liberar o DELETE
-    if request.method == 'OPTIONS':
-        return jsonify({"status": "ok"}), 200
-        
+    """
+    Remove um produto do banco de dados pelo ID.
+    Retorna 200 se removido, 404 se não encontrado.
+    """
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
+        # Verifica se o produto existe
+        cursor.execute("SELECT id FROM produtos WHERE id = ?", (id,))
+        produto = cursor.fetchone()
+        
+        if not produto:
+            conn.close()
+            return jsonify({"sucesso": False, "mensagem": "Produto não encontrado."}), 404
+        
         cursor.execute("DELETE FROM produtos WHERE id = ?", (id,))
         conn.commit()
         conn.close()
