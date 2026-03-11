@@ -1,111 +1,94 @@
 /**
- * mobile.css – Estilos para modo mobile (versão segura)
- * - Apenas ajustes essenciais sem transformar a estrutura automaticamente
- * - Protege áreas sensíveis (header, nav, footer, form)
- * - Ajusta botões, textos e imagens de forma não intrusiva
- * - Se quiser grid em áreas específicas, use a seção opcional (comentada)
+ * mobile.css – Apenas aumenta textos, botões e elementos clicáveis.
+ * O layout original permanece intacto.
  */
 
-/* 1. Respiro global (ajuste conforme altura do seu header) */
+/* Aumenta a base de todos os textos */
 body.modo-mobile {
-    margin-top: 80px !important;
+    font-size: 24px !important;  /* Tamanho base maior (padrão é 16px) */
+    line-height: 1.4 !important;
 }
 
-/* 2. Box-sizing consistente */
-body.modo-mobile * {
-    box-sizing: border-box;
-}
-
-/* 3. Tipografia fluida e levemente reduzida */
+/* Headers proporcionais */
 body.modo-mobile h1 {
-    font-size: clamp(1.5rem, 5vw, 2rem) !important;
+    font-size: 2.2em !important;
 }
 body.modo-mobile h2 {
-    font-size: clamp(1.3rem, 4vw, 1.8rem) !important;
+    font-size: 1.8em !important;
 }
 body.modo-mobile h3 {
-    font-size: clamp(1.1rem, 3.5vw, 1.5rem) !important;
+    font-size: 1.5em !important;
 }
+body.modo-mobile h4,
+body.modo-mobile h5,
+body.modo-mobile h6 {
+    font-size: 1.3em !important;
+}
+
+/* Textos comuns */
 body.modo-mobile p,
 body.modo-mobile li,
 body.modo-mobile span,
-body.modo-mobile a:not(nav a) {
-    font-size: clamp(0.95rem, 3vw, 1.1rem) !important;
+body.modo-mobile div:not([class*="header"]):not([class*="nav"]):not([class*="footer"]) {
+    font-size: 1.1em !important;
 }
 
-/* 4. Botões – área de toque confortável, mas sem forçar largura total */
+/* Botões e links que parecem botões – maiores e mais fáceis de tocar */
 body.modo-mobile button,
 body.modo-mobile .btn,
 body.modo-mobile input[type="button"],
 body.modo-mobile input[type="submit"],
-body.modo-mobile a.button {
-    min-height: 44px;
-    padding: 10px 16px !important;
-    font-size: 1rem !important;
-    /* Mantém o display original (block, inline-block, etc.) */
-    white-space: normal; /* Permite quebra de texto */
-    word-break: break-word;
+body.modo-mobile a.button,
+body.modo-mobile a.cta {
+    font-size: 1.2em !important;
+    padding: 0.8em 1.5em !important;
+    min-height: 3em !important;
+    min-width: 8em !important;
+    white-space: normal !important;  /* Quebra texto se necessário */
 }
 
-/* 5. Grupos de botões – para não ficarem empilhados */
-body.modo-mobile .btn-group,
-body.modo-mobile div:has(> button + button) {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    align-items: center;
-}
-body.modo-mobile .btn-group > *,
-body.modo-mobile div:has(> button + button) > * {
-    flex: 0 1 auto; /* Não estica, só encolhe se necessário */
+/* Links comuns também maiores */
+body.modo-mobile a {
+    font-size: 1.1em !important;
+    padding: 0.3em 0 !important;
+    display: inline-block;
 }
 
-/* 6. Imagens responsivas */
+/* Inputs e campos de formulário */
+body.modo-mobile input,
+body.modo-mobile select,
+body.modo-mobile textarea {
+    font-size: 1.2em !important;
+    padding: 0.6em !important;
+}
+
+/* Imagens – só garantir que não estouram a tela */
 body.modo-mobile img {
     max-width: 100% !important;
     height: auto !important;
-    display: block;
 }
 
-/* 7. Áreas protegidas – nunca serão transformadas em grid */
+/* Header e navegação – aumentam junto com o texto, mas mantêm estrutura */
 body.modo-mobile header,
 body.modo-mobile nav,
-body.modo-mobile footer,
-body.modo-mobile form,
 body.modo-mobile .header,
-body.modo-mobile #header,
+body.modo-mobile #header {
+    font-size: 1.1em !important;
+}
+
+/* Rodapé também */
+body.modo-mobile footer,
 body.modo-mobile .footer,
 body.modo-mobile #footer {
-    display: flex !important;      /* Preserva flex se existir */
-    flex-wrap: wrap !important;
-    align-items: center;
-    gap: 10px;
-    margin: 0 !important;
-    padding: 10px !important;
-    grid-template-columns: none !important; /* Remove grid */
+    font-size: 1em !important;
 }
 
-/* 8. Ajustes para listas */
-body.modo-mobile ul,
-body.modo-mobile ol {
-    padding-left: 20px !important;
+/* Evita rolagem horizontal indesejada (comum sem viewport) */
+body.modo-mobile {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
 }
-
-/* 9. (OPCIONAL) Áreas que você deseja que virem grid de 2 colunas.
-   Descomente e personalize os seletores conforme seu site.
-   Exemplo: se sua seção de habilidades tem classe "skills", 
-   ela se tornará um grid de 2 colunas.
-   
-   IMPORTANTE: Isso só será aplicado se você descomentar e ajustar.
-   Por padrão, está desativado para não causar problemas.
-*/
-
-body.modo-mobile .skills,
-body.modo-mobile .linguagens,
-body.modo-mobile .projetos,
-body.modo-mobile .cards-container,
-body.modo-mobile div[class*="grid"] {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 15px !important;
+body.modo-mobile * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
 }
