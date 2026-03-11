@@ -1,15 +1,17 @@
 /**
- * mobile.css – Apenas aumenta textos, botões e elementos clicáveis.
- * O layout original permanece intacto.
+ * mobile.css – Modo mobile sem viewport
+ * Versão 1.6.1 - Zoom reduzido para tamanho confortável
  */
 
-/* Aumenta a base de todos os textos */
+/* Tamanho base ajustado de 24px para 20px */
 body.modo-mobile {
-    font-size: 24px !important;  /* Tamanho base maior (padrão é 16px) */
+    font-size: 20px !important;
     line-height: 1.4 !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
 }
 
-/* Headers proporcionais */
+/* Headers */
 body.modo-mobile h1 {
     font-size: 2.2em !important;
 }
@@ -22,73 +24,69 @@ body.modo-mobile h3 {
 body.modo-mobile h4,
 body.modo-mobile h5,
 body.modo-mobile h6 {
-    font-size: 1.3em !important;
+    font-size: 1.2em !important;
 }
 
 /* Textos comuns */
 body.modo-mobile p,
 body.modo-mobile li,
 body.modo-mobile span,
-body.modo-mobile div:not([class*="header"]):not([class*="nav"]):not([class*="footer"]) {
-    font-size: 1.1em !important;
+body.modo-mobile div {
+    font-size: 1em !important;
 }
 
-/* Botões e links que parecem botões – maiores e mais fáceis de tocar */
+/* Botões - ajustados */
 body.modo-mobile button,
 body.modo-mobile .btn,
 body.modo-mobile input[type="button"],
 body.modo-mobile input[type="submit"],
-body.modo-mobile a.button,
-body.modo-mobile a.cta {
-    font-size: 1.2em !important;
-    padding: 0.8em 1.5em !important;
-    min-height: 3em !important;
-    min-width: 8em !important;
-    white-space: normal !important;  /* Quebra texto se necessário */
+body.modo-mobile a.button {
+    font-size: 1.1em !important;
+    padding: 0.6em 1.2em !important;
+    min-height: 2.5em !important;
+    min-width: 6em !important;
+    white-space: normal !important;
 }
 
-/* Links comuns também maiores */
+/* Links */
 body.modo-mobile a {
-    font-size: 1.1em !important;
+    font-size: 1em !important;
     padding: 0.3em 0 !important;
     display: inline-block;
 }
 
-/* Inputs e campos de formulário */
+/* Inputs e formulários */
 body.modo-mobile input,
 body.modo-mobile select,
 body.modo-mobile textarea {
-    font-size: 1.2em !important;
-    padding: 0.6em !important;
+    font-size: 1.1em !important;
+    padding: 0.5em !important;
 }
 
-/* Imagens – só garantir que não estouram a tela */
+/* Imagens */
 body.modo-mobile img {
     max-width: 100% !important;
     height: auto !important;
 }
 
-/* Header e navegação – aumentam junto com o texto, mas mantêm estrutura */
+/* Header e navegação */
 body.modo-mobile header,
 body.modo-mobile nav,
 body.modo-mobile .header,
 body.modo-mobile #header {
-    font-size: 1.1em !important;
-}
-
-/* Rodapé também */
-body.modo-mobile footer,
-body.modo-mobile .footer,
-body.modo-mobile #footer {
     font-size: 1em !important;
 }
 
-/* Evita rolagem horizontal indesejada (comum sem viewport) */
-body.modo-mobile {
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
+/* Footer */
+body.modo-mobile footer,
+body.modo-mobile .footer,
+body.modo-mobile #footer {
+    font-size: 0.9em !important;
 }
+
+/* Garantias */
 body.modo-mobile * {
     max-width: 100% !important;
     box-sizing: border-box !important;
+    word-wrap: break-word !important;
 }
