@@ -185,6 +185,42 @@ def deletar_produto(id):
         return jsonify({"sucesso": True, "mensagem": "Produto removido!"}), 200
     except Exception as e:
         return jsonify({"sucesso": False, "erro": str(e)}), 500
+    
+    # Adicione isso no seu backend (junto com as outras rotas)
+
+# ====================== SENHA SECRETA ======================
+# A senha fica aqui, escondida no Python (ninguém vê)
+SENHA_ULTRA_SECRETA = "phcjs26.31"  # Troque por algo mais seguro
+
+@app.route('/verificar_senha', methods=['POST'])
+def verificar_senha():
+    """
+    Verifica se a senha enviada corresponde à ultra secreta.
+    """
+    dados = request.get_json()
+    senha_recebida = dados.get('senha', '')
+    
+    if senha_recebida == SENHA_ULTRA_SECRETA:
+        return jsonify({"sucesso": True, "mensagem": "Acesso liberado!"}), 200
+    else:
+        return jsonify({"sucesso": False, "mensagem": "Senha incorreta"}), 401
+
+# Opcional: rota pra trocar senha (só você pode chamar)
+@app.route('/alterar_senha', methods=['POST'])
+def alterar_senha():
+    """
+    Altera a senha ultra secreta (protegida por senha atual)
+    """
+    global SENHA_ULTRA_SECRETA
+    dados = request.get_json()
+    senha_atual = dados.get('senha_atual', '')
+    nova_senha = dados.get('nova_senha', '')
+    
+    if senha_atual == SENHA_ULTRA_SECRETA:
+        SENHA_ULTRA_SECRETA = nova_senha
+        return jsonify({"sucesso": True, "mensagem": "Senha alterada!"}), 200
+    else:
+        return jsonify({"sucesso": False, "mensagem": "Senha atual incorreta"}), 401
 
 if __name__ == '__main__':
     init_db()

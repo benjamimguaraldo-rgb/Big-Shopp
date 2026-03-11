@@ -1,0 +1,100 @@
+body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        .form-container { background: white; padding: 20px; border-radius: 8px; max-width: 500px; margin-bottom: 30px; }
+        input, textarea { width: 100%; margin: 10px 0; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { background: #0084ff; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
+        button:hover {background-color: #003e79;}
+        button:active {background-color: #0084ff;}
+        button.btn-delete { background: #dc3545; }
+        table { width: 100%; background: white; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        img { width: 50px; }
+/* TELA DE BLOQUEIO - cobre tudo */
+.tela-bloqueio {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.95); /* Quase preto total */
+    backdrop-filter: blur(5px); /* Desfoca o fundo */
+    z-index: 999999; /* Acima de TUDO */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+}
+
+/* Conteúdo central */
+.bloqueio-conteudo {
+    background: #1a1a1a;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.8);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    border: 2px solid #3d566e;
+}
+
+.bloqueio-conteudo h2 {
+    color: #fff;
+    margin-bottom: 20px;
+    font-size: 28px;
+}
+
+.bloqueio-conteudo p {
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.senha-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    border: 2px solid #3d566e;
+    border-radius: 8px;
+    background: #333;
+    color: white;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.senha-input:focus {
+    outline: none;
+    border-color: #4a7a9c;
+}
+
+.btn-senha {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    background: #3d566e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-senha:hover {
+    background: #4d6f8a;
+}
+
+.erro-senha {
+    color: #ff6b6b;
+    margin-top: 15px;
+    font-size: 16px;
+    min-height: 20px;
+}
+
+/* Impede interação com a página */
+.tela-bloqueio ~ * {
+    pointer-events: none !important; /* Nada é clicável */
+    user-select: none !important; /* Não seleciona texto */
+}
+
+/* Até o scroll é bloqueado */
+body.travado {
+    overflow: hidden !important;
+}
