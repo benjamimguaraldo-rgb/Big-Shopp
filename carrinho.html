@@ -42,15 +42,14 @@
     <div id="lista-carrinho" class="lista-carrinho">
         </div>
     <div class="resumo-carrinho">
-        <h3 style="color: rgb(10, 97, 155);">Total: R$ <span id="valor-total">0.00</span></h3>
-        <button onclick="finalizarCompra()" id="btn-finalizar" class="btn-finalizar">Ir para o Pagamento 💳</button>
-        <a href="produtos.html">Continuar Comprando</a>
+    <h3>Total: R$ <span id="valor-total">0.00</span></h3>
+    <button onclick="finalizarCompra()" class="btn-finalizar">Ir para o Pagamento 💳</button>
+    <a href="produtos.html">Continuar Comprando</a>
+    <br>
+    <button onclick="trocarSenha()" class="btn-trocar-senha">🔄 Trocar Senha / Cliente</button>
     </div>
-    <button onclick="logoutCarrinho()" class="btn-trocar-senha">
-    🔄 Trocar Senha / Cliente
-    </button>
     </main>
-    <script src="js/carrinho.js"></script>
+    <script src="carrinho.js"></script>
     <script src="carrinho-senha.js"></script>
     <script src="mobile-automatico.js"></script>
 </body>

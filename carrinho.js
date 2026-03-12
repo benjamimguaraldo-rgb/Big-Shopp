@@ -1,49 +1,54 @@
-// ====================== CARRINHO DE COMPRAS ======================
+const API = "https://big-shopp.onrender.com";
 
-// Função para adicionar produto ao carrinho (chamada na página de produtos)
-function adicionarAoCarrinho(id, nome, preco, imagem) {
-    // Pega carrinho atual ou cria um novo
-    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+// ====================== PEGAR SENHA ======================
+
+function getSenhaUsuario() {
+    let senha = localStorage.getItem('senha_carrinho');
     
-    // Verifica se produto já existe no carrinho
-    const produtoExistente = carrinho.find(item => item.id === id);
-    
-    if (produtoExistente) {
-        // Se já existe, aumenta quantidade
-        produtoExistente.quantidade = (produtoExistente.quantidade || 1) + 1;
-    } else {
-        // Se não existe, adiciona novo
-        carrinho.push({
-            id: id,
-            nome: nome,
-            preco: preco,
-            imagem: imagem,
-            quantidade: 1
-        });
+    if (!senha) {
+        senha = prompt("🔐 DIGITE SUA SENHA DE 4 DÍGITOS PARA VER O CARRINHO:", "0000");
+        if (senha && senha.length >= 4) {
+            localStorage.setItem('senha_carrinho', senha);
+            return senha;
+        } else {
+            alert("❌ Senha inválida!");
+            return null;
+        }
     }
-    
-    // Salva no localStorage
-    localStorage.setItem('carrinho', JSON.stringify(carrinho));
-    
-    // Feedback visual
-    alert('✅ Produto adicionado ao carrinho!');
-    
-    // Opcional: atualiza contador no header se tiver
-    atualizarContadorCarrinho();
+    return senha;
 }
 
-// Função para carregar carrinho (usada na página do carrinho)
+// ====================== CARREGAR CARRINHO ======================
+
 function carregarCarrinho() {
+    console.log("🔄 Carregando carrinho...");
+    
+    // PASSO 1: PEDIR SENHA
+    const senha = getSenhaUsuario();
+    if (!senha) {
+        window.location.href = "produtos.html";
+        return;
+    }
+    
+    console.log("🔐 Senha:", senha);
+    
     const listaElemento = document.getElementById('lista-carrinho');
     const totalElemento = document.getElementById('valor-total');
     
-    if (!listaElemento) return; // Se não tiver elemento, sai
+    if (!listaElemento) return;
     
-    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    // PASSO 2: CARREGAR CARRINHO DESTA SENHA
+    let carrinho = JSON.parse(localStorage.getItem(`carrinho_${senha}`)) || [];
+    console.log("📦 Carrinho:", carrinho);
     
     if (carrinho.length === 0) {
-        listaElemento.innerHTML = '<p class="carrinho-vazio">Seu carrinho está vazio 🛒</p>';
-        if (totalElemento) totalElemento.innerText = '0.00';
+        listaElemento.innerHTML = `
+            <div class="carrinho-vazio">
+                🛒 Carrinho vazio<br>
+                <a href="produtos.html">Continuar comprando</a>
+            </div>
+        `;
+        if (totalElemento) totalElemento.innerText = "0.00";
         return;
     }
     
@@ -55,106 +60,90 @@ function carregarCarrinho() {
         const subtotal = item.preco * quantidade;
         somaTotal += subtotal;
         
-        listaElemento.innerHTML += `
-            <div class="item-carrinho">
-                <img src="${item.imagem}" width="50" height="50" style="object-fit: cover;">
-                <div class="item-info">
-                    <p><strong>${item.nome}</strong></p>
-                    <p>R$ ${item.preco.toFixed(2)}</p>
-                </div>
-                <div class="item-quantidade">
-                    <button onclick="alterarQuantidade(${index}, -1)">-</button>
-                    <span>${quantidade}</span>
-                    <button onclick="alterarQuantidade(${index}, 1)">+</button>
-                </div>
-                <div class="item-subtotal">
-                    R$ ${subtotal.toFixed(2)}
-                </div>
-                <button onclick="removerItem(${index})" class="btn-remover">❌</button>
+        const div = document.createElement('div');
+        div.className = 'item-carrinho';
+        div.innerHTML = `
+            <img src="${item.imagem}" alt="${item.nome}">
+            <div class="item-info">
+                <h3>${item.nome}</h3>
+                <p class="item-preco">R$ ${item.preco.toFixed(2)}</p>
             </div>
+            <div class="item-quantidade">
+                <button onclick="alterarQuantidade(${index}, -1)">−</button>
+                <span>${quantidade}</span>
+                <button onclick="alterarQuantidade(${index}, 1)">+</button>
+            </div>
+            <div class="item-subtotal">R$ ${subtotal.toFixed(2)}</div>
+            <button class="btn-remover" onclick="removerItem(${index})">🗑️</button>
         `;
+        listaElemento.appendChild(div);
     });
 
     if (totalElemento) {
         totalElemento.innerText = somaTotal.toFixed(2);
     }
-    
-    // Salva total no localStorage (pra usar no checkout)
-    localStorage.setItem('totalCarrinho', somaTotal.toFixed(2));
 }
 
-// Função para alterar quantidade
+// ====================== ALTERAR QUANTIDADE ======================
+
 function alterarQuantidade(index, delta) {
-    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    const senha = localStorage.getItem('senha_carrinho');
+    if (!senha) return;
+    
+    let carrinho = JSON.parse(localStorage.getItem(`carrinho_${senha}`)) || [];
     
     if (carrinho[index]) {
         carrinho[index].quantidade = (carrinho[index].quantidade || 1) + delta;
         
-        // Remove se quantidade for 0
         if (carrinho[index].quantidade <= 0) {
             carrinho.splice(index, 1);
         }
         
-        localStorage.setItem('carrinho', JSON.stringify(carrinho));
-        carregarCarrinho(); // Atualiza tela
-        atualizarContadorCarrinho();
+        localStorage.setItem(`carrinho_${senha}`, JSON.stringify(carrinho));
+        carregarCarrinho();
     }
 }
 
-// Função para remover item
+// ====================== REMOVER ITEM ======================
+
 function removerItem(index) {
-    if (confirm('Remover produto do carrinho?')) {
-        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    const senha = localStorage.getItem('senha_carrinho');
+    if (!senha) return;
+    
+    if (confirm("Remover este item do carrinho?")) {
+        let carrinho = JSON.parse(localStorage.getItem(`carrinho_${senha}`)) || [];
         carrinho.splice(index, 1);
-        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+        localStorage.setItem(`carrinho_${senha}`, JSON.stringify(carrinho));
         carregarCarrinho();
-        atualizarContadorCarrinho();
     }
 }
 
-// Função para limpar carrinho
-function limparCarrinho() {
-    if (confirm('Limpar todo o carrinho?')) {
-        localStorage.removeItem('carrinho');
-        carregarCarrinho();
-        atualizarContadorCarrinho();
-    }
-}
+// ====================== FINALIZAR COMPRA ======================
 
-// Função para atualizar contador no header (se existir)
-function atualizarContadorCarrinho() {
-    const contador = document.getElementById('contador-carrinho');
-    if (contador) {
-        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-        const totalItens = carrinho.reduce((acc, item) => acc + (item.quantidade || 1), 0);
-        contador.innerText = totalItens;
-    }
-}
-
-// Função para finalizar compra (redireciona)
 function finalizarCompra() {
-    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    const senha = localStorage.getItem('senha_carrinho');
+    if (!senha) {
+        alert("🔐 Identifique-se primeiro!");
+        return;
+    }
     
+    const carrinho = JSON.parse(localStorage.getItem(`carrinho_${senha}`)) || [];
     if (carrinho.length === 0) {
-        alert('Seu carrinho está vazio!');
+        alert("Carrinho vazio!");
         return;
     }
     
-    // Verifica se usuário está logado
-    const usuario = JSON.parse(localStorage.getItem('usuarioLogado') || sessionStorage.getItem('usuario'));
-    
-    if (!usuario) {
-        alert('Faça login para continuar!');
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    // Redireciona pro checkout
-    window.location.href = 'checkout.html';
+    window.location.href = "checkout.html";
 }
 
-// Inicializa na página do carrinho
-document.addEventListener('DOMContentLoaded', function() {
-    carregarCarrinho();
-    atualizarContadorCarrinho();
-});
+// ====================== TROCAR SENHA ======================
+
+function trocarSenha() {
+    localStorage.removeItem('senha_carrinho');
+    alert("👋 Senha removida! Recarregando...");
+    window.location.reload();
+}
+
+// ====================== INICIAR ======================
+
+document.addEventListener('DOMContentLoaded', carregarCarrinho);

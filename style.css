@@ -247,7 +247,7 @@
 }
 
 .btn-finalizar {
-    background-color: #28a745;
+    background-color: #296ef0;
     color: white;
     font-size: 1.2rem;
     padding: 15px 30px;
@@ -255,4 +255,137 @@
     border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
+}
+
+/* ====================== BOTÕES GRANDES E BONITOS ====================== */
+
+.produto-botoes {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-adicionar, .btn-comprar {
+    flex: 1;
+    min-width: 200px;
+    padding: 18px 25px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-adicionar {
+    background: linear-gradient(135deg, #3d566e, #2c4054);
+    color: white;
+}
+
+.btn-adicionar:hover {
+    background: linear-gradient(135deg, #2c4054, #1a2a38);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+.btn-comprar {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+}
+
+.btn-comprar:hover {
+    background: linear-gradient(135deg, #1e7e34, #155d27);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+/* Botões do carrinho */
+.item-quantidade button {
+    background: #3d566e;
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.item-quantidade button:hover {
+    background: #2c4054;
+    transform: scale(1.1);
+}
+
+.btn-remover {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-remover:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+.btn-finalizar {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+    border: none;
+    padding: 18px 35px;
+    font-size: 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    min-width: 280px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 20px 0;
+}
+
+.btn-finalizar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
+/* Botão trocar senha */
+.btn-trocar-senha {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 20px;
+}
+
+.btn-trocar-senha:hover {
+    background: #5a6268;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .btn-adicionar, .btn-comprar {
+        min-width: 100%;
+        padding: 15px 20px;
+        font-size: 16px;
+    }
+    
+    .btn-finalizar {
+        min-width: 100%;
+        font-size: 18px;
+    }
 }
