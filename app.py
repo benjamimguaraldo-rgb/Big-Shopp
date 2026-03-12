@@ -3,6 +3,8 @@ import sqlite3
 import secrets
 import smtplib
 import uuid
+import json  # ✅ ADICIONA ISSO
+from datetime import datetime  # ✅ ADICIONA ISSO
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask import Flask, request, jsonify, session
@@ -221,6 +223,216 @@ def alterar_senha():
         return jsonify({"sucesso": True, "mensagem": "Senha alterada!"}), 200
     else:
         return jsonify({"sucesso": False, "mensagem": "Senha atual incorreta"}), 401
+    
+
+# ====================== SISTEMA DE COMPRAS FÁCIL ======================
+
+# Email pra receber notificações (já trocado pro seu)
+EMAIL_NOTIFICACAO = "ensinoproluiz@gmail.com"
+
+@app.route('/finalizar_compra_facil', methods=['POST'])
+def finalizar_compra_facil():
+    """
+    Recebe os dados da compra, salva no banco e envia email
+    """
+    try:
+        dados = request.get_json()
+        print("📦 Dados recebidos:", dados)
+        
+        # Extrai dados
+        usuario_id = dados.get('usuario_id')
+        nome = dados.get('nome')
+        email = dados.get('email')
+        cpf = dados.get('cpf')
+        endereco = dados.get('endereco')
+        produtos = dados.get('produtos')
+        total = dados.get('total')
+        
+        # Converte pra JSON
+        produtos_json = json.dumps(produtos, ensure_ascii=False)
+        endereco_json = json.dumps(endereco, ensure_ascii=False)
+        
+        # Data atual
+        data_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        # 1️⃣ SALVA NO BANCO DE DADOS
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO compras 
+            (usuario_id, nome_cliente, email_cliente, cpf_cliente, endereco_entrega, produtos, total, status, data_compra)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (
+            usuario_id, 
+            nome, 
+            email, 
+            cpf, 
+            endereco_json, 
+            produtos_json, 
+            total, 
+            'pagamento_pendente',
+            data_atual
+        ))
+        
+        compra_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+        
+        # 2️⃣ ENVIA EMAIL DE NOTIFICAÇÃO
+        enviar_email_compra(dados, compra_id)
+        
+        return jsonify({
+            "sucesso": True,
+            "mensagem": "Compra registrada! Você receberá um email de confirmação.",
+            "compra_id": compra_id
+        }), 201
+        
+    except Exception as e:
+        print(f"❌ Erro ao finalizar compra: {e}")
+        return jsonify({"sucesso": False, "erro": str(e)}), 500
+
+
+def enviar_email_compra(dados, compra_id):
+    """
+    Envia email com os detalhes da compra
+    """
+    try:
+        # Monta lista de produtos
+        produtos_html = ""
+        for p in dados['produtos']:
+            subtotal = float(p.get('quantidade', 1)) * float(p['preco'])
+            produtos_html += f"""
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 10px;">{p['nome']}</td>
+                <td style="padding: 10px;">{p.get('quantidade', 1)}</td>
+                <td style="padding: 10px;">R$ {float(p['preco']):.2f}</td>
+                <td style="padding: 10px;">R$ {subtotal:.2f}</td>
+            </tr>
+            """
+        
+        # Endereço formatado
+        end = dados['endereco']
+        endereco_formatado = f"{end.get('rua', '')}, {end.get('numero', '')} - {end.get('bairro', '')}<br>{end.get('cidade', '')} - CEP: {end.get('cep', '')}"
+        
+        # Template do email
+        html = f"""
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }}
+                .container {{ max-width: 600px; margin: 0 auto; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
+                h1 {{ color: #3d566e; text-align: center; }}
+                .pedido-info {{ background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }}
+                table {{ width: 100%; border-collapse: collapse; }}
+                th {{ background: #3d566e; color: white; padding: 10px; text-align: left; }}
+                .total {{ font-size: 1.2em; font-weight: bold; text-align: right; margin-top: 20px; padding-top: 10px; border-top: 2px solid #3d566e; }}
+                .status {{ background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; text-align: center; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>🛍️ Big Shop - Nova Compra</h1>
+                
+                <div class="pedido-info">
+                    <h3>📦 Pedido #{compra_id}</h3>
+                    <p><strong>Data:</strong> {datetime.now().strftime("%d/%m/%Y %H:%M")}</p>
+                </div>
+                
+                <h3>👤 Cliente</h3>
+                <p>
+                    <strong>Nome:</strong> {dados['nome']}<br>
+                    <strong>Email:</strong> {dados['email']}<br>
+                    <strong>CPF:</strong> {dados['cpf']}
+                </p>
+                
+                <h3>📍 Endereço de Entrega</h3>
+                <p>{endereco_formatado}</p>
+                
+                <h3>🛒 Produtos</h3>
+                <table>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Qtd</th>
+                        <th>Preço</th>
+                        <th>Subtotal</th>
+                    </tr>
+                    {produtos_html}
+                </table>
+                
+                <div class="total">
+                    TOTAL: R$ {dados['total']:.2f}
+                </div>
+                
+                <div class="status">
+                    ⏳ Status: PAGAMENTO PENDENTE
+                </div>
+                
+                <p style="text-align: center; margin-top: 30px;">
+                    <a href="https://benjamimguaraldo-rgb.github.io/Big-Shopp/meus-pedidos.html" 
+                       style="background: #3d566e; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                        Ver Meus Pedidos
+                    </a>
+                </p>
+            </div>
+        </body>
+        </html>
+        """
+        
+        # Envia email
+        msg = MIMEMultipart()
+        msg['From'] = SENDER_EMAIL
+        msg['To'] = EMAIL_NOTIFICACAO
+        msg['Subject'] = f"🛍️ Nova compra - Big Shop #{compra_id}"
+        msg.attach(MIMEText(html, 'html'))
+        
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(SENDER_EMAIL, SENDER_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        
+        print(f"✅ Email enviado pra {EMAIL_NOTIFICACAO}")
+        
+    except Exception as e:
+        print(f"❌ Erro ao enviar email: {e}")
+
+
+@app.route('/compras/usuario/<int:usuario_id>', methods=['GET'])
+def listar_compras_usuario(usuario_id):
+    """
+    Retorna todas as compras de um usuário (pra página Meus Pedidos)
+    """
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, nome_cliente, produtos, total, status, data_compra
+            FROM compras
+            WHERE usuario_id = ?
+            ORDER BY data_compra DESC
+        ''', (usuario_id,))
+        
+        compras = cursor.fetchall()
+        conn.close()
+        
+        resultado = []
+        for c in compras:
+            resultado.append({
+                "id": c[0],
+                "cliente": c[1],
+                "produtos": json.loads(c[2]),
+                "total": c[3],
+                "status": c[4],
+                "data": c[5]
+            })
+        
+        return jsonify(resultado), 200
+        
+    except Exception as e:
+        print(f"❌ Erro ao listar compras: {e}")
+        return jsonify({"sucesso": False, "erro": str(e)}), 500
 
 if __name__ == '__main__':
     init_db()
