@@ -14,10 +14,12 @@ app = Flask(__name__)
 
 # CONFIGURAÇÃO DE URLS OFICIAIS
 # O CORS agora permite que o seu site no GitHub acesse o Python no Render
-CORS(app, supports_credentials=True, resources={r"/*": {
-    "origins": ["https://benjamimguaraldo-rgb.github.io"]
-}})
-
+# Configuração CORS mais permissiva
+CORS(app, 
+     supports_credentials=True, 
+     origins=["https://benjamimguaraldo-rgb.github.io"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     allow_headers=["Content-Type", "Authorization", "Accept"])
 app.secret_key = secrets.token_urlsafe(16)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -194,18 +196,27 @@ def deletar_produto(id):
 # A senha fica aqui, escondida no Python (ninguém vê)
 SENHA_ULTRA_SECRETA = "phcjs26.31"  # Troque por algo mais seguro
 
-@app.route('/verificar_senha', methods=['POST'])
+@app.route('/verificar_senha', methods=['POST', 'OPTIONS'])
 def verificar_senha():
-    """
-    Verifica se a senha enviada corresponde à ultra secreta.
-    """
-    dados = request.get_json()
-    senha_recebida = dados.get('senha', '')
+    # Resposta para preflight (OPTIONS)
+    if request.method == 'OPTIONS':
+        response = jsonify({"status": "ok"})
+        response.headers.add("Access-Control-Allow-Origin", "https://benjamimguaraldo-rgb.github.io")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type")
+        response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
+        return response, 200
     
-    if senha_recebida == SENHA_ULTRA_SECRETA:
-        return jsonify({"sucesso": True, "mensagem": "Acesso liberado!"}), 200
-    else:
-        return jsonify({"sucesso": False, "mensagem": "Senha incorreta"}), 401
+    # Rota normal (POST)
+    try:
+        dados = request.get_json()
+        senha_recebida = dados.get('senha', '')
+        
+        if senha_recebida == SENHA_ULTRA_SECRETA:
+            return jsonify({"sucesso": True, "mensagem": "Acesso liberado!"}), 200
+        else:
+            return jsonify({"sucesso": False, "mensagem": "Senha incorreta"}), 401
+    except Exception as e:
+        return jsonify({"sucesso": False, "erro": str(e)}), 500
 
 # Opcional: rota pra trocar senha (só você pode chamar)
 @app.route('/alterar_senha', methods=['POST'])
@@ -433,6 +444,15 @@ def listar_compras_usuario(usuario_id):
     except Exception as e:
         print(f"❌ Erro ao listar compras: {e}")
         return jsonify({"sucesso": False, "erro": str(e)}), 500
+    
+# ====================== CORREÇÃO CORS P/ SENHA ======================
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'https://benjamimguaraldo-rgb.github.io')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
 
 if __name__ == '__main__':
     init_db()
