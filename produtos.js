@@ -9,7 +9,6 @@ async function carregarProdutos() {
         container.innerHTML = "";
 
         produtos.forEach(p => {
-            // Escapa os dados para não quebrar o HTML
             const produtoJSON = JSON.stringify(p).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
             
             const card = document.createElement("div");
@@ -27,7 +26,7 @@ async function carregarProdutos() {
                         <button onclick='adicionarAoCarrinho(${produtoJSON})'>
                             Adicionar
                         </button>
-                        <button onclick="comprar(${p.id})">
+                        <button onclick='comprarAgora(${produtoJSON})'>
                             Comprar
                         </button>
                     </div>
@@ -40,25 +39,12 @@ async function carregarProdutos() {
     }
 }
 
-function adicionarAoCarrinho(produto) {
-    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-    
-    // Verifica se produto já existe
-    const existe = carrinho.find(item => item.id === produto.id);
-    
-    if (existe) {
-        existe.quantidade = (existe.quantidade || 1) + 1;
-    } else {
-        produto.quantidade = 1;
-        carrinho.push(produto);
-    }
-    
-    localStorage.setItem('carrinho', JSON.stringify(carrinho));
-    alert(`✅ ${produto.nome} adicionado!`);
-}
-
-function comprar(id) {
-    window.location.href = "carrinho.html";
+// Compra direta (adiciona e vai pro carrinho)
+function comprarAgora(produto) {
+    adicionarAoCarrinho(produto);
+    setTimeout(() => {
+        window.location.href = "carrinho.html";
+    }, 500);
 }
 
 carregarProdutos();

@@ -50,6 +50,14 @@ def init_db():
             imagem TEXT
         )
     ''')
+    '''
+CREATE TABLE IF NOT EXISTS carrinhos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    senha TEXT NOT NULL,
+    produtos TEXT NOT NULL,
+    ultima_atualizacao TIMESTAMP
+)
+'''
     conn.commit()
     conn.close()
 
@@ -144,6 +152,141 @@ def listar_produtos():
     dados = cursor.fetchall()
     conn.close()
     return jsonify([{"id": p[0], "nome": p[1], "descricao": p[2], "preco": p[3], "imagem": p[4]} for p in dados])
+
+@app.route('/carrinho/salvar', methods=['POST'])
+def salvar_carrinho():
+    """
+    Salva o carrinho de um usuário identificado por senha
+    """
+    try:
+        dados = request.get_json()
+        senha = dados.get('senha')
+        produtos = dados.get('produtos')
+        
+        if not senha or not produtos:
+            return jsonify({"erro": "Senha e produtos são obrigatórios"}), 400
+        
+        produtos_json = json.dumps(produtos)
+        data_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Verifica se já existe carrinho pra essa senha
+        cursor.execute("SELECT id FROM carrinhos WHERE senha = ?", (senha,))
+        existente = cursor.fetchone()
+        
+        if existente:
+            # Atualiza existente
+            cursor.execute('''
+                UPDATE carrinhos 
+                SET produtos = ?, ultima_atualizacao = ?
+                WHERE senha = ?
+            ''', (produtos_json, data_atual, senha))
+        else:
+            # Cria novo
+            cursor.execute('''
+                INSERT INTO carrinhos (senha, produtos, ultima_atualizacao)
+                VALUES (?, ?, ?)
+            ''', (senha, produtos_json, data_atual))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({"sucesso": True, "mensagem": "Carrinho salvo!"}), 200
+        
+    except Exception as e:
+        print(f"❌ Erro: {e}")
+        return jsonify({"erro": str(e)}), 500
+
+
+@app.route('/carrinho/carregar/<senha>', methods=['GET'])
+def carregar_carrinho(senha):
+    """
+    Carrega o carrinho de uma senha específica
+    """
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT produtos FROM carrinhos WHERE senha = ?", (senha,))
+        resultado = cursor.fetchone()
+        conn.close()
+        
+        if resultado:
+            produtos = json.loads(resultado[0])
+            return jsonify({
+                "sucesso": True,
+                "produtos": produtos
+            }), 200
+        else:
+            return jsonify({
+                "sucesso": True,
+                "produtos": []
+            }), 200
+            
+    except Exception as e:
+        print(f"❌ Erro: {e}")
+        return jsonify({"erro": str(e)}), 500
+
+
+@app.route('/carrinho/adicionar', methods=['POST'])
+def adicionar_ao_carrinho():
+    """
+    Adiciona um produto ao carrinho de uma senha
+    """
+    try:
+        dados = request.get_json()
+        senha = dados.get('senha')
+        produto = dados.get('produto')
+        
+        if not senha or not produto:
+            return jsonify({"erro": "Senha e produto são obrigatórios"}), 400
+        
+        # Carrega carrinho atual
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT produtos FROM carrinhos WHERE senha = ?", (senha,))
+        resultado = cursor.fetchone()
+        
+        if resultado:
+            produtos = json.loads(resultado[0])
+        else:
+            produtos = []
+        
+        # Adiciona novo produto
+        produto['quantidade'] = 1
+        produtos.append(produto)
+        
+        # Salva de volta
+        produtos_json = json.dumps(produtos)
+        data_atual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        if resultado:
+            cursor.execute('''
+                UPDATE carrinhos 
+                SET produtos = ?, ultima_atualizacao = ?
+                WHERE senha = ?
+            ''', (produtos_json, data_atual, senha))
+        else:
+            cursor.execute('''
+                INSERT INTO carrinhos (senha, produtos, ultima_atualizacao)
+                VALUES (?, ?, ?)
+            ''', (senha, produtos_json, data_atual))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            "sucesso": True,
+            "mensagem": "Produto adicionado!",
+            "total": len(produtos)
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Erro: {e}")
+        return jsonify({"erro": str(e)}), 500
 
 
 # ====================== ROTAS DE ADMINISTRAÇÃO ======================
