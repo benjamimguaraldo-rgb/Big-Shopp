@@ -575,6 +575,163 @@ def listar_compras_usuario(usuario_id):
     except Exception as e:
         print(f"❌ Erro ao listar compras: {e}")
         return jsonify({"sucesso": False, "erro": str(e)}), 500
+    
+# ====================== SISTEMA DE PAGAMENTO SIMULADO ======================
+
+@app.route('/simular_pagamento/<int:compra_id>', methods=['POST'])
+def simular_pagamento(compra_id):
+    """
+    Simula a aprovação de um pagamento (sem Mercado Pago)
+    """
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Verifica se a compra existe
+        cursor.execute("SELECT id, email_cliente FROM compras WHERE id = ?", (compra_id,))
+        compra = cursor.fetchone()
+        
+        if not compra:
+            return jsonify({"erro": "Compra não encontrada"}), 404
+        
+        # Atualiza status para "pago"
+        cursor.execute('''
+            UPDATE compras 
+            SET status = 'pago' 
+            WHERE id = ?
+        ''', (compra_id,))
+        
+        conn.commit()
+        conn.close()
+        
+        # Envia email de confirmação (opcional)
+        # enviar_email_pagamento_simulado(compra_id)
+        
+        return jsonify({
+            "sucesso": True, 
+            "mensagem": "✅ Pagamento simulado aprovado!"
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Erro: {e}")
+        return jsonify({"erro": str(e)}), 500
+
+
+# ====================== ADMIN DE ENTREGAS ======================
+
+@app.route('/admin/compras', methods=['GET'])
+def listar_todas_compras():
+    """
+    Lista todas as compras (para o admin)
+    """
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, nome_cliente, email_cliente, total, status, data_compra
+            FROM compras
+            ORDER BY data_compra DESC
+        ''')
+        
+        compras = cursor.fetchall()
+        conn.close()
+        
+        resultado = []
+        for c in compras:
+            resultado.append({
+                "id": c[0],
+                "cliente": c[1],
+                "email": c[2],
+                "total": c[3],
+                "status": c[4],
+                "data": c[5]
+            })
+        
+        return jsonify(resultado), 200
+        
+    except Exception as e:
+        print(f"❌ Erro: {e}")
+        return jsonify({"erro": str(e)}), 500
+
+
+@app.route('/admin/atualizar_status', methods=['POST'])
+def atualizar_status_entrega():
+    """
+    Atualiza o status de entrega de um pedido
+    Status possíveis: pagamento_pendente, pago, enviado, entregue, cancelado
+    """
+    try:
+        dados = request.get_json()
+        compra_id = dados.get('compra_id')
+        novo_status = dados.get('status')
+        
+        status_validos = ['pagamento_pendente', 'pago', 'enviado', 'entregue', 'cancelado']
+        
+        if novo_status not in status_validos:
+            return jsonify({"erro": "Status inválido"}), 400
+        
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            UPDATE compras 
+            SET status = ? 
+            WHERE id = ?
+        ''', (novo_status, compra_id))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            "sucesso": True,
+            "mensagem": f"Status atualizado para {novo_status}"
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ Erro: {e}")
+        return jsonify({"erro": str(e)}), 500
+
+
+@app.route('/admin/detalhes_compra/<int:compra_id>', methods=['GET'])
+def detalhes_compra(compra_id):
+    """
+    Retorna detalhes completos de uma compra
+    """
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, nome_cliente, email_cliente, cpf_cliente, 
+                   endereco_entrega, produtos, total, status, data_compra
+            FROM compras
+            WHERE id = ?
+        ''', (compra_id,))
+        
+        compra = cursor.fetchone()
+        conn.close()
+        
+        if not compra:
+            return jsonify({"erro": "Compra não encontrada"}), 404
+        
+        resultado = {
+            "id": compra[0],
+            "cliente": compra[1],
+            "email": compra[2],
+            "cpf": compra[3],
+            "endereco": json.loads(compra[4]),
+            "produtos": json.loads(compra[5]),
+            "total": compra[6],
+            "status": compra[7],
+            "data": compra[8]
+        }
+        
+        return jsonify(resultado), 200
+        
+    except Exception as e:
+        print(f"❌ Erro: {e}")
+        return jsonify({"erro": str(e)}), 500
 
 if __name__ == '__main__':
     init_db()

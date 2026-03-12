@@ -4,47 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="mobile-automatico.css">
-    <title>Big Shop - Painel Admin</title>
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="admin-entregas.css">
+    <title>Big Shop - Admin de Entregas</title>
 </head>
 <body>
-    <h1>📦 Gerenciar Produtos</h1>
-
-    <div class="form-container">
-        <h3>Novo Produto</h3>
-        <input type="text" id="nome" placeholder="Nome do Produto">
-        <textarea id="descricao" placeholder="Descrição"></textarea>
-        <input type="number" id="preco" placeholder="Preço (Ex: 99.90)">
-        <input type="text" id="imagem" placeholder="URL da Imagem">
-        <button onclick="salvarProduto()">Salvar Produto</button>
+    <h1>📦 ADMIN - Gerenciar Entregas</h1>
+    
+    <div class="filtros">
+        <button class="filtro-btn ativo" onclick="filtrarPedidos('todos')">Todos</button>
+        <button class="filtro-btn" onclick="filtrarPedidos('pagamento_pendente')">⏳ Pendentes</button>
+        <button class="filtro-btn" onclick="filtrarPedidos('pago')">💰 Pagos</button>
+        <button class="filtro-btn" onclick="filtrarPedidos('enviado')">🚚 Enviados</button>
+        <button class="filtro-btn" onclick="filtrarPedidos('entregue')">✅ Entregues</button>
+        <button class="filtro-btn" onclick="filtrarPedidos('cancelado')">❌ Cancelados</button>
     </div>
-
-    <h2>Produtos Cadastrados</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Foto</th>
-                <th>Nome</th>
-                <th>Preço</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody id="tabela-produtos">
-            </tbody>
-    </table>
-
-
-    <!-- TELA DE BLOQUEIO (começa invisível) -->
-<div id="telaBloqueio" class="tela-bloqueio" style="display: none;">
-    <div class="bloqueio-conteudo">
-        <h2>🔒 ÁREA RESTRITA</h2>
-        <p>Digite a senha para acessar:</p>
-        <input type="password" id="senhaInput" placeholder="Senha" class="senha-input">
-        <button onclick="verificarSenha()" class="btn-senha">Acessar</button>
-        <p id="mensagemErro" class="erro-senha"></p>
+    
+    <div id="pedidos-container" class="pedidos-grid">
+        <div class="carregando">
+            <div class="loader"></div>
+            <p>Carregando pedidos...</p>
+        </div>
     </div>
-</div>
-<script src="admin.js"></script>
-<script src="mobile-automatico.js"></script>
+    
+    <!-- TELA DE BLOQUEIO -->
+    <div id="telaBloqueio" class="tela-bloqueio" style="display: none;">
+        <div class="bloqueio-conteudo">
+            <h2>🔒 ÁREA RESTRITA</h2>
+            <p>Digite a senha para acessar:</p>
+            <input type="password" id="senhaInput" placeholder="Senha" class="senha-input">
+            <button onclick="verificarSenha()" class="btn-senha">Acessar</button>
+            <p id="mensagemErro" class="erro-senha"></p>
+        </div>
+    </div>
+    
+    <script src="admin-entregas.js"></script>
+    <script src="mobile-automatico.js"></script>
 </body>
 </html>

@@ -1,92 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="description" content="Somos a BIG SHOPP, especializada em brindes corporativos personalizados, atendendo empresas que buscam fortalecer sua marca de forma criativa e eficiente. Desenvolvemos brindes para eventos, campanhas promocionais, ações institucionais, datas comemorativas e muito mais.">
+    <meta charset="UTF-8">
+    <meta name="description" content="Big Shopp - Brindes corporativos personalizados. Canecas, camisetas, chaveiros e muito mais!">
     <link rel="icon" type="image/png" href="imagens/favicon.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="produtos.css">
+    <link rel="stylesheet" href="mobile-automatico.css">
     <link rel="apple-touch-icon" sizes="180x180" href="imagens/favicon.png">
-    <link rel="icon" type="image/png" href="imagens/favicon.png">
-    <link rel="icon" type="image/png" href="imagens/inox.png">
-    <link rel="icon" type="image/png" href="imagens/logo.png">
-<title>Big Shop - Produtos</title>
-
-<link rel="stylesheet" href="produtos.css">
-<link rel="stylesheet" href="mobile-automatico.css">
-
+    <title>Big Shop - Produtos</title>
 </head>
 
 <body class="home">
-
-<header class="headerprincipal">
-        <img src="imagens/logo.png"
-             alt="Logo Da Big Shop"
-             width="64px"
-             height="64px">
-             <h2>Big Shop</h2>
-            <a href="https://wa.me/5511922207487" target="_blank">
-                <button class="botao">📞 WhatsApp</button>
-            </a>
-
-             <a href="home.html">
-               <button class="botao">🏠 Pagina Principal</button>
-             </a>
-             <a href="carrinho.html">
-                <button class="botao">🛒 Carrinho</button>
-             </a>
-
-
-             <a href="#">
-                <button class="botao">📦 Meus Pedidos</button>
-             </a>
+    <header class="headerprincipal">
+        <img src="imagens/logo.png" alt="Logo Big Shop" width="64" height="64">
+        <h2>Big Shop</h2>
+        <a href="https://wa.me/5511922207487" target="_blank">
+            <button class="botao">📞 WhatsApp</button>
+        </a>
+        <a href="home.html">
+            <button class="botao">🏠 Página Principal</button>
+        </a>
+        <a href="carrinho.html">
+            <button class="botao">🛒 Carrinho</button>
+        </a>
+        <a href="#">
+            <button class="botao">📦 Meus Pedidos</button>
+        </a>
     </header>
 
-<main class="pagina-produtos">
-
-    <div class="container-produtos">
-
-        <!-- PRODUTO (modelo que o JS vai repetir) -->
-        <div class="produto-card">
-
-            <div class="produto-imagem">
-                <img src="" class="img-produto">
-            </div>
-
-            <div class="produto-info">
-
-                <h2 class="produto-nome">Nome do produto</h2>
-
-                <p class="produto-descricao">
-                    descrição do produto
-                </p>
-
-                <div class="produto-preco">
-                    R$ 00,00
-                </div>
-
-                <div class="produto-botoes">
-
-                    <button>
-                        Adicionar ao carrinho
-                    </button>
-
-                    <button>
-                        Comprar
-                    </button>
-
-                </div>
-
-            </div>
-
+    <main class="pagina-produtos">
+        <div class="container-produtos">
+            <!-- Produtos serão carregados aqui pelo JavaScript -->
         </div>
-        <!-- FIM PRODUTO -->
+    </main>
 
-    </div>
-
-</main>
-
-<script src="produtos.js"></script>
-<script src="mobile-automatico.js"></script>
-
+    <!-- SCRIPTS NA ORDEM CORRETA -->
+    <script src="produtos-lista.js"></script>      <!-- Dados dos produtos -->
+    <script src="carregar-produtos.js"></script>   <!-- Função que exibe -->
+    <script src="carrinho.js"></script>            <!-- Funções do carrinho (ADICIONAR E COMPRAR) -->
+    <script src="mobile-automatico.js"></script>   <!-- Mobile -->
 </body>
 </html>

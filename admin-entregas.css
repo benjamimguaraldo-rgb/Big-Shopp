@@ -1,0 +1,334 @@
+/* ====================== ADMIN DE ENTREGAS - ESTILOS ====================== */
+
+:root {
+    --azul-principal: #406385;
+    --azul-claro: #6c9ac3;
+    --verde: #28a745;
+    --amarelo: #ffc107;
+    --vermelho: #dc3545;
+    --cinza: #6c757d;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 0;
+    padding: 120px 20px 40px;
+    min-height: 100vh;
+}
+
+h1 {
+    color: white;
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.filtros {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.filtro-btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    background: white;
+    color: #333;
+}
+
+.filtro-btn.ativo {
+    background: var(--azul-principal);
+    color: white;
+    transform: scale(1.05);
+}
+
+.filtro-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.pedidos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 25px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.pedido-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.3s;
+    border-left: 5px solid var(--cinza);
+    animation: fadeIn 0.5s ease;
+}
+
+.pedido-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+.pedido-card.status-pagamento_pendente { border-left-color: var(--amarelo); }
+.pedido-card.status-pago { border-left-color: var(--verde); }
+.pedido-card.status-enviado { border-left-color: var(--azul-principal); }
+.pedido-card.status-entregue { border-left-color: var(--azul-claro); }
+.pedido-card.status-cancelado { border-left-color: var(--vermelho); }
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.pedido-id {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--azul-principal);
+}
+
+.pedido-data {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.pedido-cliente {
+    margin-bottom: 15px;
+}
+
+.pedido-cliente h3 {
+    margin: 0 0 5px;
+    color: #333;
+}
+
+.pedido-cliente p {
+    margin: 3px 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.pedido-produtos {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.produto-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px dashed #ddd;
+}
+
+.produto-item:last-child {
+    border-bottom: none;
+}
+
+.pedido-total {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: var(--azul-principal);
+    text-align: right;
+    margin: 15px 0;
+}
+
+.status-select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.status-select:focus {
+    outline: none;
+    border-color: var(--azul-principal);
+}
+
+.btn-atualizar {
+    width: 100%;
+    padding: 12px;
+    background: var(--azul-principal);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-atualizar:hover {
+    background: #2c4a6e;
+    transform: scale(1.02);
+}
+
+.btn-simular-pagamento {
+    width: 100%;
+    padding: 12px;
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s;
+}
+
+.btn-simular-pagamento:hover {
+    background: #218838;
+}
+
+.badge-status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+.badge-pagamento_pendente { background: #fff3cd; color: #856404; }
+.badge-pago { background: #d4edda; color: #155724; }
+.badge-enviado { background: #cce5ff; color: #004085; }
+.badge-entregue { background: #d1e7dd; color: #0a3622; }
+.badge-cancelado { background: #f8d7da; color: #721c24; }
+
+.acoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-ver-detalhes {
+    flex: 1;
+    padding: 10px;
+    background: var(--cinza);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-ver-detalhes:hover {
+    background: #5a6268;
+}
+
+.carregando {
+    text-align: center;
+    color: white;
+    font-size: 1.2em;
+    padding: 40px;
+}
+
+.loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--azul-principal);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====================== TELA DE BLOQUEIO ====================== */
+
+.tela-bloqueio {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(5px);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bloqueio-conteudo {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.senha-input {
+    width: 100%;
+    padding: 15px;
+    margin: 20px 0;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+.btn-senha {
+    background: var(--azul-principal);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.erro-senha {
+    color: red;
+    margin-top: 10px;
+}
+
+/* ====================== RESPONSIVO ====================== */
+
+@media (max-width: 768px) {
+    body {
+        padding: 100px 10px 20px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    .pedidos-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .filtros {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filtro-btn {
+        text-align: center;
+    }
+}
