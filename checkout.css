@@ -1,0 +1,164 @@
+.checkout-container {
+    max-width: 1200px;
+    margin: 100px auto 40px;
+    padding: 20px;
+}
+
+.checkout-container h1 {
+    color: #3d566e;
+    margin-bottom: 30px;
+}
+
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 30px;
+}
+
+/* FORMULÁRIO */
+.formulario {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.formulario h2 {
+    color: #3d566e;
+    font-size: 1.3em;
+    margin: 20px 0 15px;
+}
+
+.formulario h2:first-of-type {
+    margin-top: 0;
+}
+
+.campo {
+    margin-bottom: 15px;
+}
+
+.campo label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: 500;
+}
+
+.campo input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.campo input:focus {
+    outline: none;
+    border-color: #3d566e;
+}
+
+.campo-duplo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* RESUMO DO PEDIDO */
+.resumo-pedido {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    height: fit-content;
+    position: sticky;
+    top: 120px;
+}
+
+.itens-lista {
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.item-resumo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.item-resumo img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.item-resumo-info {
+    flex: 1;
+}
+
+.item-resumo-info p {
+    margin: 0;
+    font-weight: 500;
+}
+
+.item-resumo-info small {
+    color: #666;
+}
+
+.item-resumo-preco {
+    font-weight: bold;
+    color: #3d566e;
+}
+
+.total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 20px 0;
+    padding-top: 20px;
+    border-top: 2px solid #3d566e;
+}
+
+.btn-finalizar {
+    width: 100%;
+    padding: 15px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-finalizar:hover {
+    background: #218838;
+}
+
+.btn-voltar {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #666;
+    text-decoration: none;
+}
+
+.btn-voltar:hover {
+    color: #3d566e;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .checkout-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .resumo-pedido {
+        position: static;
+    }
+}

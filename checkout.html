@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout - Big Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="checkout.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="imagens/favicon.png">
+    <link rel="icon" type="image/png" href="imagens/favicon.png">
+    <link rel="icon" type="image/png" href="imagens/inox.png">
+    <link rel="icon" type="image/png" href="imagens/logo.png">
+    <link rel="stylesheet" href="mobile-automatico.css">
+</head>
+<body>
+    <header class="headerprincipal">
+        <img src="imagens/logo.png"
+             alt="Logo Da Big Shop"
+             width="64px"
+             height="64px">
+             <h2>Big Shop</h2>
+            <a href="https://wa.me/5511922207487" target="_blank">
+                <button class="botao">📞 WhatsApp</button>
+            </a>
+
+             <a href=produtos.html>
+               <button class="botao">🛍️ Produtos</button>
+             </a>
+             <a href="carrinho.html">
+                <button class="botao">🛒 Carrinho</button>
+             </a>
+
+
+             <a href="#">
+                <button class="botao">📦 Meus Pedidos</button>
+             </a>
+    </header>
+
+    <main class="checkout-container">
+        <h1>Finalizar Compra</h1>
+        
+        <div class="checkout-grid">
+            <!-- FORMULÁRIO DE DADOS -->
+            <div class="formulario">
+                <h2>📋 Dados Pessoais</h2>
+                
+                <div class="campo">
+                    <label>Nome Completo *</label>
+                    <input type="text" id="nome" required placeholder="Seu nome completo">
+                </div>
+                
+                <div class="campo">
+                    <label>Email *</label>
+                    <input type="email" id="email" required placeholder="seu@email.com">
+                </div>
+                
+                <div class="campo">
+                    <label>CPF *</label>
+                    <input type="text" id="cpf" required placeholder="000.000.000-00">
+                </div>
+                
+                <h2>📍 Endereço de Entrega</h2>
+                
+                <div class="campo">
+                    <label>CEP *</label>
+                    <input type="text" id="cep" required placeholder="00000-000">
+                </div>
+                
+                <div class="campo">
+                    <label>Rua *</label>
+                    <input type="text" id="rua" required>
+                </div>
+                
+                <div class="campo-duplo">
+                    <div class="campo">
+                        <label>Número *</label>
+                        <input type="text" id="numero" required>
+                    </div>
+                    <div class="campo">
+                        <label>Complemento</label>
+                        <input type="text" id="complemento">
+                    </div>
+                </div>
+                
+                <div class="campo-duplo">
+                    <div class="campo">
+                        <label>Bairro *</label>
+                        <input type="text" id="bairro" required>
+                    </div>
+                    <div class="campo">
+                        <label>Cidade *</label>
+                        <input type="text" id="cidade" required>
+                    </div>
+                </div>
+                
+                <div class="campo">
+                    <label>Telefone (opcional)</label>
+                    <input type="text" id="telefone" placeholder="(11) 99999-9999">
+                </div>
+            </div>
+            
+            <!-- RESUMO DO PEDIDO -->
+            <div class="resumo-pedido">
+                <h2>🛒 Seu Pedido</h2>
+                
+                <div id="itens-carrinho" class="itens-lista">
+                    <!-- Itens serão carregados via JS -->
+                </div>
+                
+                <div class="total">
+                    <span>Total:</span>
+                    <span id="total-valor">R$ 0,00</span>
+                </div>
+                
+                <button onclick="finalizarCompra()" class="btn-finalizar">
+                    Confirmar Compra
+                </button>
+                
+                <a href="carrinho.html" class="btn-voltar">← Voltar ao carrinho</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/checkout.js"></script>
+    <script src="mobile-automatico.js"></script>
+</body>
+</html>

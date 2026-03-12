@@ -11,13 +11,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function ativarBloqueio() {
-    // Mostra a tela de bloqueio
-    document.getElementById('telaBloqueio').style.display = 'flex';
-    document.body.classList.add('travado'); // Impede scroll
+    const tela = document.getElementById('telaBloqueio');
+    if (!tela) {
+        console.error("❌ Tela de bloqueio não encontrada!");
+        return;
+    }
     
-    // Foca no input automaticamente
+    tela.style.display = 'flex';
+    document.body.classList.add('travado');
+    
     setTimeout(() => {
-        document.getElementById('senhaInput').focus();
+        document.getElementById('senhaInput')?.focus();
     }, 100);
 }
 
@@ -27,126 +31,193 @@ function desativarBloqueio() {
 }
 
 async function verificarSenha() {
-    console.log("🚨 FUNÇÃO verificarSenha FOI CHAMADA!");
+    console.log("🚨 Verificando senha...");
     
     const senha = document.getElementById('senhaInput').value;
-    console.log("📝 Senha digitada:", senha);
     
     if (!senha) {
-        console.log("⚠️ Senha vazia!");
         mostrarErro('Digite a senha!');
         return;
     }
     
-    console.log("📡 API URL:", API);
-    console.log("📡 Chamando:", `${API}/verificar_senha`);
-    
     try {
-        console.log("⏳ Enviando requisição...");
-        
         const response = await fetch(`${API}/verificar_senha`, {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ senha: senha })
         });
         
-        console.log("📨 STATUS DA RESPOSTA:", response.status);
-        console.log("📨 HEADERS:", response.headers);
-        
         const data = await response.json();
-        console.log("📦 DADOS RECEBIDOS:", data);
         
         if (data.sucesso) {
-            console.log("✅ ACESSO LIBERADO!");
+            console.log("✅ Senha correta!");
             desativarBloqueio();
-            carregarProdutosAdmin();
+            carregarProdutosAdmin(); // Carrega produtos após liberar
         } else {
-            console.log("❌ SENHA INCORRETA!");
             mostrarErro('🔒 Senha incorreta!');
             document.getElementById('senhaInput').value = '';
             document.getElementById('senhaInput').focus();
         }
     } catch (error) {
-        console.log("💥 ERRO CATASTRÓFICO:");
-        console.error(error);
-        mostrarErro('Erro: ' + error.message);
+        console.error("❌ Erro:", error);
+        mostrarErro('Erro ao verificar senha');
     }
 }
 
 function mostrarErro(msg) {
-    document.getElementById('mensagemErro').textContent = msg;
-    setTimeout(() => {
-        document.getElementById('mensagemErro').textContent = '';
-    }, 3000);
+    const erroEl = document.getElementById('mensagemErro');
+    if (erroEl) {
+        erroEl.textContent = msg;
+        setTimeout(() => {
+            erroEl.textContent = '';
+        }, 3000);
+    }
 }
 
-// Apertar Enter no input
+// Enter no input
 document.addEventListener('keypress', function(e) {
     if (e.key === 'Enter' && 
-        document.getElementById('telaBloqueio') && 
-        document.getElementById('telaBloqueio').style.display === 'flex') {
+        document.getElementById('telaBloqueio')?.style.display === 'flex') {
         verificarSenha();
     }
 });
 
 // ====================== FUNÇÕES DOS PRODUTOS ======================
 
-// Função para buscar produtos e listar na tabela
+// Carregar produtos
 async function carregarProdutosAdmin() {
-    const res = await fetch(`${API}/produtos`);
-    const produtos = await res.json();
-    const tabela = document.getElementById("tabela-produtos");
-    if (!tabela) return; // Se não existir a tabela, sai
-    
-    tabela.innerHTML = "";
-
-    produtos.forEach(p => {
-        tabela.innerHTML += `
+    try {
+        console.log("📦 Carregando produtos...");
+        const res = await fetch(`${API}/produtos`);
+        
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const produtos = await res.json();
+        console.log("✅ Produtos carregados:", produtos);
+        
+        const tabela = document.getElementById("tabela-produtos");
+        if (!tabela) return;
+        
+        if (produtos.length === 0) {
+            tabela.innerHTML = `<tr><td colspan="4" style="text-align: center;">Nenhum produto cadastrado</td></tr>`;
+            return;
+        }
+        
+        tabela.innerHTML = produtos.map(p => `
             <tr>
-                <td><img src="${p.imagem}" alt="foto" style="max-width: 50px;"></td>
+                <td><img src="${p.imagem}" alt="${p.nome}" style="max-width: 50px; max-height: 50px; object-fit: cover;"></td>
                 <td>${p.nome}</td>
                 <td>R$ ${p.preco.toFixed(2)}</td>
                 <td>
                     <button class="btn-delete" onclick="deletarProduto(${p.id})">Excluir</button>
                 </td>
             </tr>
-        `;
-    });
+        `).join('');
+        
+    } catch (error) {
+        console.error("❌ Erro ao carregar produtos:", error);
+        alert("Erro ao carregar produtos. Verifique o console.");
+    }
 }
 
-// Função para enviar novo produto ao banco
+// Salvar produto (CORRIGIDO)
 async function salvarProduto() {
+    // Pega valores dos inputs
+    const nome = document.getElementById("nome")?.value;
+    const descricao = document.getElementById("descricao")?.value;
+    const preco = document.getElementById("preco")?.value;
+    const imagem = document.getElementById("imagem")?.value;
+    
+    // Validação
+    if (!nome || !descricao || !preco || !imagem) {
+        alert("❌ Preencha todos os campos!");
+        return;
+    }
+    
     const produto = {
-        nome: document.getElementById("nome").value,
-        descricao: document.getElementById("descricao").value,
-        preco: parseFloat(document.getElementById("preco").value),
-        imagem: document.getElementById("imagem").value
+        nome: nome,
+        descricao: descricao,
+        preco: parseFloat(preco),
+        imagem: imagem
     };
-
-    const res = await fetch(`${API}/criar_produto`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(produto)
-    });
-
-    if (res.ok) {
-        alert("✅ Produto salvo!");
-        location.reload(); // Recarrega para mostrar na lista
-    } else {
-        alert("❌ Erro ao salvar.");
+    
+    console.log("📤 Enviando produto:", produto);
+    
+    try {
+        const res = await fetch(`${API}/criar_produto`, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(produto)
+        });
+        
+        const data = await res.json();
+        console.log("📥 Resposta:", data);
+        
+        if (res.ok) {
+            alert("✅ Produto salvo com sucesso!");
+            
+            // Limpa os campos
+            document.getElementById("nome").value = "";
+            document.getElementById("descricao").value = "";
+            document.getElementById("preco").value = "";
+            document.getElementById("imagem").value = "";
+            
+            // Recarrega a lista sem dar reload na página
+            carregarProdutosAdmin();
+        } else {
+            alert("❌ Erro ao salvar: " + (data.erro || "Erro desconhecido"));
+        }
+    } catch (error) {
+        console.error("❌ Erro na requisição:", error);
+        alert("Erro ao conectar com o servidor");
     }
 }
 
-// Função para deletar
+// Deletar produto (CORRIGIDO)
 async function deletarProduto(id) {
-    if (confirm("Tem certeza que deseja excluir?")) {
-        await fetch(`${API}/deletar_produto/${id}`, { method: "DELETE" });
-        carregarProdutosAdmin();
+    if (!confirm("⚠️ Tem certeza que deseja excluir este produto?")) {
+        return;
+    }
+    
+    console.log(`🗑️ Deletando produto ID: ${id}`);
+    
+    try {
+        const res = await fetch(`${API}/deletar_produto/${id}`, { 
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        const data = await res.json();
+        console.log("📥 Resposta delete:", data);
+        
+        if (res.ok) {
+            alert("✅ Produto excluído!");
+            carregarProdutosAdmin(); // Recarrega a lista
+        } else {
+            alert("❌ Erro: " + (data.mensagem || data.erro || "Erro ao excluir"));
+        }
+    } catch (error) {
+        console.error("❌ Erro no delete:", error);
+        alert("Erro ao conectar com o servidor");
     }
 }
 
-// NÃO chama carregarProdutosAdmin automaticamente aqui
-// Agora ela só será chamada APÓS a senha correta
+// Função de teste pra verificar se API está online
+async function testarAPI() {
+    try {
+        const res = await fetch(`${API}/produtos`);
+        const data = await res.json();
+        console.log("✅ API OK:", data);
+    } catch (error) {
+        console.error("❌ API OFFLINE:", error);
+    }
+}
+
+// Testa API quando carrega
+testarAPI();
