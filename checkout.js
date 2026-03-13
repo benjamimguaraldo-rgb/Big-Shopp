@@ -1,42 +1,152 @@
 
+// ====================== CARREGAR RESUMO DO PEDIDO ======================
 
-// Carrega o carrinho e mostra no resumo
-function carregarResumo() {
-    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-    const container = document.getElementById('itens-carrinho');
-    const totalElemento = document.getElementById('total-valor');
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("📄 Página de checkout carregada");
     
-    if (carrinho.length === 0) {
-        window.location.href = 'carrinho.html';
+    // Pega produtos do sessionStorage
+    const produtos = JSON.parse(sessionStorage.getItem('checkout_produtos')) || [];
+    const senha = sessionStorage.getItem('checkout_senha') || localStorage.getItem('senha_carrinho');
+    
+    console.log("📦 Produtos:", produtos);
+    console.log("🔐 Senha:", senha);
+    
+    if (produtos.length === 0) {
+        alert('❌ Nenhum produto para finalizar!');
+        window.location.href = 'produtos.html';
         return;
     }
+    
+    carregarResumo(produtos);
+});
+
+function carregarResumo(produtos) {
+    const container = document.getElementById('lista-produtos');
+    const totalEl = document.getElementById('total-compra');
+    
+    if (!container) return;
     
     let total = 0;
     container.innerHTML = '';
     
-    carrinho.forEach(item => {
-        const quantidade = item.quantidade || 1;
-        const subtotal = item.preco * quantidade;
+    produtos.forEach(item => {
+        const qtd = item.quantidade || 1;
+        const subtotal = item.preco * qtd;
         total += subtotal;
         
         container.innerHTML += `
             <div class="item-resumo">
-                <img src="${item.imagem}" alt="${item.nome}">
-                <div class="item-resumo-info">
-                    <p>${item.nome}</p>
-                    <small>${quantidade}x R$ ${item.preco.toFixed(2)}</small>
+                <img src="${item.imagem}" alt="${item.nome}" style="width:60px;height:60px;object-fit:cover;">
+                <div>
+                    <h4>${item.nome}</h4>
+                    <p>${qtd}x R$ ${item.preco.toFixed(2)}</p>
                 </div>
-                <div class="item-resumo-preco">
-                    R$ ${subtotal.toFixed(2)}
-                </div>
+                <span>R$ ${subtotal.toFixed(2)}</span>
             </div>
         `;
     });
     
-    totalElemento.textContent = `R$ ${total.toFixed(2)}`;
+    if (totalEl) {
+        totalEl.textContent = `R$ ${total.toFixed(2)}`;
+    }
 }
 
-// Busca CEP automaticamente
+// ====================== FINALIZAR COMPRA ======================
+
+async function finalizarCompra() {
+    console.log("🛒 Finalizando compra...");
+    
+    // PEGA OS DADOS DO FORMULÁRIO
+    const nome = document.getElementById('nome')?.value;
+    const email = document.getElementById('email')?.value;
+    const cpf = document.getElementById('cpf')?.value;
+    const rua = document.getElementById('rua')?.value;
+    const numero = document.getElementById('numero')?.value;
+    const bairro = document.getElementById('bairro')?.value;
+    const cidade = document.getElementById('cidade')?.value;
+    const cep = document.getElementById('cep')?.value;
+    
+    // VALIDAÇÕES
+    if (!nome || !email || !cpf || !rua || !numero || !bairro || !cidade || !cep) {
+        alert('❌ Preencha todos os campos obrigatórios!');
+        return;
+    }
+    
+    // PEGA PRODUTOS E SENHA
+    const produtos = JSON.parse(sessionStorage.getItem('checkout_produtos')) || [];
+    const senha = sessionStorage.getItem('checkout_senha') || localStorage.getItem('senha_carrinho');
+    
+    if (produtos.length === 0) {
+        alert('❌ Nenhum produto para finalizar!');
+        window.location.href = 'produtos.html';
+        return;
+    }
+    
+    // CALCULA TOTAL
+    let total = 0;
+    produtos.forEach(item => {
+        total += item.preco * (item.quantidade || 1);
+    });
+    
+    // MONTA OBJETO DO ENDEREÇO
+    const endereco = {
+        rua: rua,
+        numero: numero,
+        bairro: bairro,
+        cidade: cidade,
+        cep: cep
+    };
+    
+    // MONTA DADOS PARA ENVIAR
+    const dadosParaEnviar = {
+        nome: nome,
+        email: email,
+        cpf: cpf,
+        endereco: endereco,
+        produtos: produtos,
+        total: total,
+        senha: senha
+    };
+    
+    console.log("📦 Dados sendo enviados:", dadosParaEnviar);
+    
+    try {
+        // 👉 FETCH COM AWAIT (CORRETO!)
+        const response = await fetch(`${API}/finalizar_compra_facil`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dadosParaEnviar)
+        });
+        
+        // 👉 PEGA RESPOSTA COMO JSON
+        const data = await response.json();
+        
+        console.log("📨 Resposta do servidor:", data);
+        console.log("📨 Status:", response.status);
+        
+        if (response.ok) {
+            alert('✅ Compra finalizada com sucesso!');
+            
+            // LIMPA DADOS DA SESSÃO
+            sessionStorage.removeItem('checkout_produtos');
+            sessionStorage.removeItem('checkout_senha');
+            
+            // REDIRECIONA
+            window.location.href = 'meus-pedidos.html';
+        } else {
+            alert(`❌ Erro: ${data.erro || 'Erro desconhecido'}`);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro no fetch:', error);
+        alert('❌ Erro ao conectar com o servidor. Tente novamente.');
+    }
+}
+
+// ====================== BUSCAR CEP (OPCIONAL) ======================
+
 document.getElementById('cep')?.addEventListener('blur', async function() {
     const cep = this.value.replace(/\D/g, '');
     
@@ -55,70 +165,3 @@ document.getElementById('cep')?.addEventListener('blur', async function() {
         }
     }
 });
-
-// Finalizar compra
-async function finalizarCompra() {
-    // Pega dados do formulário
-    const dados = {
-        nome: document.getElementById('nome')?.value,
-        email: document.getElementById('email')?.value,
-        cpf: document.getElementById('cpf')?.value,
-        telefone: document.getElementById('telefone')?.value || '',
-        endereco: {
-            cep: document.getElementById('cep')?.value,
-            rua: document.getElementById('rua')?.value,
-            numero: document.getElementById('numero')?.value,
-            complemento: document.getElementById('complemento')?.value || '',
-            bairro: document.getElementById('bairro')?.value,
-            cidade: document.getElementById('cidade')?.value
-        },
-        produtos: JSON.parse(localStorage.getItem('carrinho')) || [],
-        total: parseFloat(document.getElementById('total-valor')?.textContent.replace('R$ ', '').replace(',', '.'))
-    };
-    
-    // Valida campos obrigatórios
-    if (!dados.nome || !dados.email || !dados.cpf || !dados.endereco.cep) {
-        alert('Preencha todos os campos obrigatórios!');
-        return;
-    }
-    
-    if (dados.produtos.length === 0) {
-        alert('Carrinho vazio!');
-        return;
-    }
-    
-    try {
-        const response = await fetch(`${API}/finalizar_compra_facil`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                usuario_id: null, // Sem login
-                nome: dados.nome,
-                email: dados.email,
-                cpf: dados.cpf,
-                endereco: dados.endereco,
-                produtos: dados.produtos,
-                total: dados.total
-            })
-        });
-        
-        const resultado = await response.json();
-        
-        if (resultado.sucesso) {
-            // Limpa carrinho
-            localStorage.removeItem('carrinho');
-            
-            alert('✅ Compra registrada! Você receberá um email.');
-            window.location.href = 'meus-pedidos.html';
-        } else {
-            alert('❌ Erro: ' + resultado.mensagem);
-        }
-        
-    } catch (error) {
-        console.error('Erro:', error);
-        alert('Erro ao finalizar compra');
-    }
-}
-
-// Carrega resumo ao abrir página
-document.addEventListener('DOMContentLoaded', carregarResumo);
