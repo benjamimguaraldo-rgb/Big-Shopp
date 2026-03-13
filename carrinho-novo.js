@@ -1,3 +1,6 @@
+// ====================== CARRINHO-NOVO.JS ======================
+// (assumindo que config.js já carrega a API antes)
+// ======================= rosno =================================
 
 let senhaAtual = null;
 let produtosCarrinho = [];
@@ -9,27 +12,36 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (senhaSalva) {
         senhaAtual = senhaSalva;
-        esconderTelaSenha();
+        esconderTelaSenha(); // Tenta esconder, mas com segurança
         carregarCarrinhoServidor(senhaSalva);
     } else {
-        mostrarTelaSenha();
+        mostrarTelaSenha(); // Tenta mostrar, mas com segurança
     }
 });
 
 function mostrarTelaSenha() {
     const tela = document.getElementById('tela-senha');
+    const conteudo = document.getElementById('conteudo-carrinho');
+    
     if (tela) tela.style.display = 'flex';
-    document.getElementById('conteudo-carrinho').style.display = 'none';
+    if (conteudo) conteudo.style.display = 'none';
 }
 
 function esconderTelaSenha() {
-    document.getElementById('tela-senha').style.display = 'none';
-    document.getElementById('conteudo-carrinho').style.display = 'block';
+    const tela = document.getElementById('tela-senha');
+    const conteudo = document.getElementById('conteudo-carrinho');
+    
+    if (tela) tela.style.display = 'none';
+    if (conteudo) conteudo.style.display = 'block';
 }
 
 async function verificarSenhaCarrinho() {
-    const senha = document.getElementById('senha-input').value;
+    const senhaInput = document.getElementById('senha-input');
     const erroEl = document.getElementById('senha-erro');
+    
+    if (!senhaInput || !erroEl) return;
+    
+    const senha = senhaInput.value;
     
     if (!senha || senha.length < 4) {
         erroEl.textContent = '❌ Digite uma senha de 4 dígitos';
@@ -38,15 +50,20 @@ async function verificarSenhaCarrinho() {
     
     localStorage.setItem('senha_carrinho', senha);
     senhaAtual = senha;
+    
     await carregarCarrinhoServidor(senha);
     esconderTelaSenha();
 }
 
 function trocarSenha() {
-    localStorage.removeItem('senha_carrinho');
-    senhaAtual = null;
-    mostrarTelaSenha();
-    document.getElementById('senha-input').value = '';
+    if (confirm('Trocar de usuário? Isso vai remover a senha atual.')) {
+        localStorage.removeItem('senha_carrinho');
+        senhaAtual = null;
+        produtosCarrinho = [];
+        mostrarTelaSenha();
+        const input = document.getElementById('senha-input');
+        if (input) input.value = '';
+    }
 }
 
 // ====================== CARRINHO NO SERVIDOR ======================
@@ -58,7 +75,7 @@ async function carregarCarrinhoServidor(senha) {
         produtosCarrinho = data.produtos || [];
         exibirCarrinho();
     } catch (error) {
-        console.error("❌ Erro:", error);
+        console.error("❌ Erro ao carregar:", error);
         produtosCarrinho = [];
         exibirCarrinho();
     }
@@ -67,14 +84,18 @@ async function carregarCarrinhoServidor(senha) {
 async function salvarCarrinhoServidor() {
     if (!senhaAtual) return;
     
-    await fetch(`${API}/carrinho/salvar`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            senha: senhaAtual,
-            produtos: produtosCarrinho
-        })
-    });
+    try {
+        await fetch(`${API}/carrinho/salvar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                senha: senhaAtual,
+                produtos: produtosCarrinho
+            })
+        });
+    } catch (error) {
+        console.error("❌ Erro ao salvar:", error);
+    }
 }
 
 // ====================== EXIBIR CARRINHO ======================
@@ -86,7 +107,12 @@ function exibirCarrinho() {
     if (!lista) return;
     
     if (!produtosCarrinho || produtosCarrinho.length === 0) {
-        lista.innerHTML = '<div class="carrinho-vazio"><p>🛒 Carrinho vazio</p><a href="produtos.html" class="btn-continuar">Comprar</a></div>';
+        lista.innerHTML = `
+            <div class="carrinho-vazio">
+                <p>🛒 Seu carrinho está vazio</p>
+                <a href="produtos.html" class="btn-continuar">Continuar Comprando</a>
+            </div>
+        `;
         if (totalEl) totalEl.textContent = 'R$ 0,00';
         return;
     }
@@ -99,26 +125,29 @@ function exibirCarrinho() {
         const subtotal = item.preco * qtd;
         total += subtotal;
         
-        lista.innerHTML += `
-            <div class="item-carrinho">
-                <img src="${item.imagem}" alt="${item.nome}">
-                <div class="item-info">
-                    <h3>${item.nome}</h3>
-                    <div class="item-preco">R$ ${item.preco.toFixed(2)}</div>
-                </div>
-                <div class="item-quantidade">
-                    <button onclick="alterarQuantidade(${index}, -1)">−</button>
-                    <span>${qtd}</span>
-                    <button onclick="alterarQuantidade(${index}, 1)">+</button>
-                </div>
-                <div class="item-subtotal">R$ ${subtotal.toFixed(2)}</div>
-                <button class="btn-remover" onclick="removerItem(${index})">🗑️</button>
+        const div = document.createElement('div');
+        div.className = 'item-carrinho';
+        div.innerHTML = `
+            <img src="${item.imagem}" alt="${item.nome}">
+            <div class="item-info">
+                <h3>${item.nome}</h3>
+                <div class="item-preco">R$ ${item.preco.toFixed(2)}</div>
             </div>
+            <div class="item-quantidade">
+                <button onclick="alterarQuantidade(${index}, -1)">−</button>
+                <span>${qtd}</span>
+                <button onclick="alterarQuantidade(${index}, 1)">+</button>
+            </div>
+            <div class="item-subtotal">R$ ${subtotal.toFixed(2)}</div>
+            <button class="btn-remover" onclick="removerItem(${index})">🗑️</button>
         `;
+        lista.appendChild(div);
     });
     
     if (totalEl) totalEl.textContent = `R$ ${total.toFixed(2)}`;
 }
+
+// ====================== FUNÇÕES DE MANIPULAÇÃO ======================
 
 async function alterarQuantidade(index, delta) {
     if (!produtosCarrinho[index]) return;
@@ -136,24 +165,27 @@ async function alterarQuantidade(index, delta) {
 }
 
 async function removerItem(index) {
-    if (!confirm('Remover item?')) return;
+    if (!confirm('Remover este item do carrinho?')) return;
     produtosCarrinho.splice(index, 1);
     await salvarCarrinhoServidor();
     exibirCarrinho();
 }
 
 async function limparCarrinho() {
-    if (!confirm('Limpar carrinho?')) return;
+    if (!confirm('Limpar todo o carrinho?')) return;
     produtosCarrinho = [];
     await salvarCarrinhoServidor();
     exibirCarrinho();
 }
 
+// ====================== FINALIZAR COMPRA ======================
+
 function finalizarCompra() {
     if (!produtosCarrinho || produtosCarrinho.length === 0) {
-        alert('Carrinho vazio!');
+        alert('Seu carrinho está vazio!');
         return;
     }
+    
     sessionStorage.setItem('checkout_produtos', JSON.stringify(produtosCarrinho));
     sessionStorage.setItem('checkout_senha', senhaAtual);
     window.location.href = 'checkout.html';

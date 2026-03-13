@@ -15,8 +15,11 @@ app = Flask(__name__)
 # CONFIGURAÇÃO DE URLS OFICIAIS
 # O CORS agora permite que o seu site no GitHub acesse o Python no Render
 # Configuração CORS mais permissiva
-CORS(app, origins=["https://benjamimguaraldo-rgb.github.io"], supports_credentials=True)
-app.secret_key = secrets.token_urlsafe(16)
+CORS(app, 
+     origins=["https://benjamimguaraldo-rgb.github.io"],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+     allow_headers=["Content-Type", "Authorization", "Accept"],
+     supports_credentials=True)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database_v3.db")

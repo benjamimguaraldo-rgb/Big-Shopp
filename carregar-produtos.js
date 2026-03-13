@@ -1,4 +1,5 @@
-
+// ====================== CARREGAR-PRODUTOS.JS ======================
+// (assumindo que config.js já carrega a API)
 
 // ====================== CARREGAR PRODUTOS ======================
 
@@ -19,6 +20,7 @@ function carregarProdutos() {
         const card = document.createElement("div");
         card.className = "produto-card";
         
+        // 👉 CRIA OS BOTÕES COM FUNÇÕES GLOBAIS
         card.innerHTML = `
             <div class="produto-imagem">
                 <img src="${p.imagem}" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/300x280'">
@@ -41,15 +43,15 @@ function carregarProdutos() {
     });
 }
 
-// ====================== FUNÇÃO ADICIONAR AO CARRINHO ======================
+// ====================== FUNÇÃO ADICIONAR AO CARRINHO (COM PEDIDO DE SENHA) ======================
 
-async function adicionarAoCarrinho(produto) {
+window.adicionarAoCarrinho = async function(produto) {
     console.log("🛒 Adicionando ao carrinho:", produto);
     
-    // Verifica se já tem senha
+    // 👉 VERIFICA SE JÁ TEM SENHA
     let senha = localStorage.getItem('senha_carrinho');
     
-    // Se não tiver senha, pede agora
+    // 👉 SE NÃO TIVER, PEDE AGORA!
     if (!senha) {
         senha = prompt("🔐 DIGITE SUA SENHA DE 4 DÍGITOS (CRIE UMA AGORA):", "0000");
         
@@ -63,7 +65,7 @@ async function adicionarAoCarrinho(produto) {
     }
     
     try {
-        // Carrega carrinho atual do servidor
+        // Carrega carrinho atual
         const response = await fetch(`${API}/carrinho/carregar/${senha}`);
         const data = await response.json();
         let carrinho = data.produtos || [];
@@ -94,14 +96,14 @@ async function adicionarAoCarrinho(produto) {
         console.error("❌ Erro:", error);
         alert('Erro ao adicionar produto. Verifique o servidor.');
     }
-}
+};
 
-// ====================== FUNÇÃO COMPRAR AGORA (VAI DIRETO PRO CHECKOUT) ======================
+// ====================== FUNÇÃO COMPRAR AGORA ======================
 
-function comprarAgora(produto) {
+window.comprarAgora = async function(produto) {
     console.log("🛒 Comprar agora:", produto);
     
-    // Verifica senha
+    // 👉 VERIFICA SENHA
     let senha = localStorage.getItem('senha_carrinho');
     
     if (!senha) {
@@ -116,7 +118,7 @@ function comprarAgora(produto) {
         alert('✅ Senha criada com sucesso!');
     }
     
-    // Cria um carrinho temporário só com este produto
+    // Cria carrinho temporário
     const carrinhoTemp = [{
         id: produto.id,
         nome: produto.nome,
@@ -125,13 +127,13 @@ function comprarAgora(produto) {
         quantidade: 1
     }];
     
-    // Salva no sessionStorage para o checkout
+    // Salva no sessionStorage
     sessionStorage.setItem('checkout_produtos', JSON.stringify(carrinhoTemp));
     sessionStorage.setItem('checkout_senha', senha);
     
-    // VAI DIRETO PRO CHECKOUT!
+    // Vai pro checkout
     window.location.href = 'checkout.html';
-}
+};
 
 // ====================== INICIALIZAÇÃO ======================
 
