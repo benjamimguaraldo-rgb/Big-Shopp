@@ -188,7 +188,6 @@ def init_db():
     """Cria todas as tabelas necessárias, se não existirem."""
     logger.info("Inicializando banco de dados...")
     
-    # 👉 TUDO DENTRO DO WITH
     with get_db_connection() as conn:
         cursor = conn.cursor()
 
@@ -208,7 +207,6 @@ def init_db():
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS compras (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                senha TEXT,
                 nome_cliente TEXT NOT NULL,
                 email_cliente TEXT NOT NULL,
                 cpf_cliente TEXT NOT NULL,
@@ -219,6 +217,16 @@ def init_db():
                 data_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+
+        # 👉 👉 👉 MIGRAÇÃO: ADICIONA COLUNA SENHA SE NÃO EXISTIR
+        try:
+            cursor.execute("ALTER TABLE compras ADD COLUMN senha TEXT")
+            logger.info("✅ Coluna 'senha' adicionada à tabela compras")
+        except sqlite3.OperationalError as e:
+            if "duplicate column name" in str(e):
+                logger.info("ℹ️ Coluna 'senha' já existe")
+            else:
+                logger.error(f"Erro ao adicionar coluna: {e}")
 
         # Índices para compras
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_compras_status ON compras(status)')
@@ -236,10 +244,8 @@ def init_db():
             )
         ''')
 
-        # Commit dentro do with
         conn.commit()
     
-    # Log fora do with (após conexão fechada)
     logger.info("Banco de dados inicializado com sucesso.")
 
 # Chama a função (FORA da definição)
