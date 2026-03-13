@@ -1,5 +1,4 @@
-// ====================== CHECKOUT.JS ======================
-const API = "https://big-shopp.onrender.com";
+
 
 // CARREGAR PRODUTOS AO ABRIR A PÁGINA
 document.addEventListener('DOMContentLoaded', function() {
