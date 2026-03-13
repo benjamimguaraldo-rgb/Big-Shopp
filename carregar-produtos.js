@@ -44,15 +44,26 @@ function carregarProdutos() {
 // ====================== FUNÇÕES DO CARRINHO (ADICIONADAS AQUI) ======================
 
 // Função para adicionar ao carrinho
+// ====================== FUNÇÃO ADICIONAR AO CARRINHO (COM CRIAÇÃO DE SENHA) ======================
+
 async function adicionarAoCarrinho(produto) {
     console.log("🛒 Adicionando ao carrinho:", produto);
     
+    // Verifica se já tem senha
     let senha = localStorage.getItem('senha_carrinho');
     
+    // Se não tiver senha, PEDE PRA CRIAR AGORA
     if (!senha) {
-        alert('🔐 Você precisa criar uma senha primeiro!');
-        window.location.href = 'carrinho.html';
-        return;
+        senha = prompt("🔐 CRIE SUA SENHA DE 4 DÍGITOS:", "0000");
+        
+        if (!senha || senha.length < 4) {
+            alert('❌ Senha inválida! Use 4 dígitos.');
+            return;
+        }
+        
+        // Salva a nova senha
+        localStorage.setItem('senha_carrinho', senha);
+        alert('✅ Senha criada com sucesso!');
     }
     
     try {
@@ -87,6 +98,15 @@ async function adicionarAoCarrinho(produto) {
         console.error("❌ Erro:", error);
         alert('Erro ao adicionar produto');
     }
+}
+
+// Função para comprar agora (adiciona e redireciona)
+function comprarAgora(produto) {
+    console.log("🛒 Comprar agora:", produto);
+    adicionarAoCarrinho(produto);
+    setTimeout(() => {
+        window.location.href = 'carrinho.html';
+    }, 500);
 }
 
 // Função para comprar agora (adiciona e redireciona)
