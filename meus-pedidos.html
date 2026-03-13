@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Big Shop - Acompanhe seus pedidos">
+    <link rel="icon" type="image/png" href="imagens/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="meus-pedidos.css">
+    <link rel="stylesheet" href="mobile-automatico.css">
+    <title>Big Shop - Meus Pedidos</title>
+</head>
+<body class="home">
+    <header class="headerprincipal">
+        <img src="imagens/logo.png" alt="Logo Big Shop" width="64" height="64">
+        <h2>Big Shop</h2>
+        <a href="https://wa.me/5511922207487" target="_blank">
+            <button class="botao">📞 WhatsApp</button>
+        </a>
+        <a href="produtos.html">
+            <button class="botao">🛍️ Produtos</button>
+        </a>
+        <a href="home.html">
+            <button class="botao">🏠 Página Principal</button>
+        </a>
+        <a href="carrinho.html">
+            <button class="botao">🛒 Carrinho</button>
+        </a>
+    </header>
+
+    <main class="pedidos-main">
+        <h1 class="pedidos-titulo">📦 Meus Pedidos</h1>
+        
+        <!-- TELA DE IDENTIFICAÇÃO (SENHA OU EMAIL) -->
+        <div id="tela-identificacao" class="tela-identificacao">
+            <div class="identificacao-card">
+                <h2>🔐 Identifique-se</h2>
+                <p>Digite o email usado na compra ou sua senha de 4 dígitos:</p>
+                
+                <div class="input-group">
+                    <input type="email" id="email-input" placeholder="Seu email" class="identificacao-input">
+                </div>
+                
+                <div class="divisor">
+                    <span>ou</span>
+                </div>
+                
+                <div class="input-group">
+                    <input type="password" id="senha-input" placeholder="Sua senha de 4 dígitos" maxlength="4" class="identificacao-input">
+                </div>
+                
+                <button onclick="identificarCliente()" class="btn-identificar">Ver Meus Pedidos</button>
+                <p id="identificacao-erro" class="identificacao-erro"></p>
+                
+                <small>⚠️ Use o email que você usou no checkout ou a senha do carrinho</small>
+            </div>
+        </div>
+
+        <!-- CONTEÚDO DOS PEDIDOS (começa escondido) -->
+        <div id="conteudo-pedidos" class="conteudo-pedidos" style="display: none;">
+            <!-- FILTROS -->
+            <div class="filtros-pedidos">
+                <button class="filtro-btn ativo" onclick="filtrarPedidos('todos')">Todos</button>
+                <button class="filtro-btn" onclick="filtrarPedidos('pagamento_pendente')">⏳ Pendentes</button>
+                <button class="filtro-btn" onclick="filtrarPedidos('pago')">💰 Pagos</button>
+                <button class="filtro-btn" onclick="filtrarPedidos('enviado')">🚚 Enviados</button>
+                <button class="filtro-btn" onclick="filtrarPedidos('entregue')">✅ Entregues</button>
+                <button class="filtro-btn" onclick="filtrarPedidos('cancelado')">❌ Cancelados</button>
+            </div>
+
+            <!-- LISTA DE PEDIDOS -->
+            <div id="pedidos-lista" class="pedidos-lista">
+                <div class="carregando">
+                    <div class="loader"></div>
+                    <p>Carregando seus pedidos...</p>
+                </div>
+            </div>
+
+            <!-- BOTÃO VOLTAR -->
+            <div class="acoes-pedidos">
+                <button onclick="trocarIdentificacao()" class="btn-trocar">🔄 Trocar Identificação</button>
+                <a href="produtos.html" class="btn-continuar">🛍️ Continuar Comprando</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="meus-pedidos.js"></script>
+    <script src="mobile-automatico.js"></script>
+</body>
+</html>

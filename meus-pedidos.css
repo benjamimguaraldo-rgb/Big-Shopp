@@ -1,0 +1,499 @@
+/* ====================== MEUS PEDIDOS - ESTILOS ====================== */
+
+.pedidos-main {
+    padding: 120px 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100vh;
+}
+
+.pedidos-titulo {
+    color: white;
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ====================== TELA DE IDENTIFICAÇÃO ====================== */
+
+.tela-identificacao {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.identificacao-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.identificacao-card h2 {
+    color: #406385;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+}
+
+.identificacao-card p {
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.identificacao-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.identificacao-input:focus {
+    outline: none;
+    border-color: #406385;
+    box-shadow: 0 0 0 3px rgba(64, 99, 133, 0.2);
+}
+
+.divisor {
+    position: relative;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.divisor::before,
+.divisor::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 45%;
+    height: 1px;
+    background: #ddd;
+}
+
+.divisor::before {
+    left: 0;
+}
+
+.divisor::after {
+    right: 0;
+}
+
+.divisor span {
+    background: white;
+    padding: 0 10px;
+    color: #999;
+    font-size: 14px;
+}
+
+.btn-identificar {
+    background: linear-gradient(135deg, #406385, #2c4a6e);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    transition: all 0.3s;
+    margin: 20px 0 10px;
+}
+
+.btn-identificar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(64, 99, 133, 0.4);
+}
+
+.identificacao-erro {
+    color: #dc3545;
+    margin: 10px 0;
+    min-height: 20px;
+    font-size: 14px;
+}
+
+/* ====================== FILTROS ====================== */
+
+.filtros-pedidos {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.filtro-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background: white;
+    color: #333;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.filtro-btn.ativo {
+    background: #406385;
+    color: white;
+    transform: scale(1.05);
+}
+
+.filtro-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* ====================== LISTA DE PEDIDOS ====================== */
+
+.pedidos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pedido-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    border-left: 5px solid #6c757d;
+    animation: fadeIn 0.5s ease;
+}
+
+.pedido-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* Cores por status */
+.pedido-card.status-pagamento_pendente { border-left-color: #ffc107; }
+.pedido-card.status-pago { border-left-color: #28a745; }
+.pedido-card.status-enviado { border-left-color: #17a2b8; }
+.pedido-card.status-entregue { border-left-color: #28a745; }
+.pedido-card.status-cancelado { border-left-color: #dc3545; }
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.pedido-id {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #406385;
+}
+
+.pedido-data {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.pedido-status {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-pagamento_pendente { background: #fff3cd; color: #856404; }
+.status-pago { background: #d4edda; color: #155724; }
+.status-enviado { background: #cce5ff; color: #004085; }
+.status-entregue { background: #d1e7dd; color: #0a3622; }
+.status-cancelado { background: #f8d7da; color: #721c24; }
+
+/* ====================== PRODUTOS DO PEDIDO ====================== */
+
+.pedido-produtos {
+    margin: 20px 0;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.produto-pedido {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #dee2e6;
+}
+
+.produto-pedido:last-child {
+    border-bottom: none;
+}
+
+.produto-info-pedido {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.produto-info-pedido img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.produto-nome-pedido {
+    font-weight: 500;
+    color: #333;
+}
+
+.produto-qtd-pedido {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.produto-preco-pedido {
+    font-weight: bold;
+    color: #406385;
+}
+
+/* ====================== TOTais ====================== */
+
+.pedido-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px solid #dee2e6;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.pedido-total span:last-child {
+    color: #28a745;
+    font-size: 1.4em;
+}
+
+/* ====================== ENDEREÇO ====================== */
+
+.pedido-endereco {
+    margin-top: 15px;
+    padding: 15px;
+    background: #e9ecef;
+    border-radius: 8px;
+    font-size: 0.95em;
+    color: #495057;
+}
+
+.pedido-endereco strong {
+    color: #406385;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* ====================== AÇÕES ====================== */
+
+.acoes-pedido {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.btn-detalhes-pedido {
+    background: #406385;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-detalhes-pedido:hover {
+    background: #2c4a6e;
+    transform: scale(1.05);
+}
+
+.btn-ajuda {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-ajuda:hover {
+    background: #5a6268;
+}
+
+/* ====================== CARRREGANDO ====================== */
+
+.carregando {
+    text-align: center;
+    padding: 60px;
+    background: white;
+    border-radius: 15px;
+}
+
+.loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #406385;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ====================== AÇÕES FINAIS ====================== */
+
+.acoes-pedidos {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+.btn-trocar {
+    background: #ffc107;
+    color: #333;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-trocar:hover {
+    background: #e0a800;
+    transform: scale(1.05);
+}
+
+.btn-continuar {
+    background: #28a745;
+    color: white;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-continuar:hover {
+    background: #218838;
+    transform: scale(1.05);
+}
+
+/* ====================== SEM PEDIDOS ====================== */
+
+.sem-pedidos {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: 15px;
+}
+
+.sem-pedidos p {
+    font-size: 1.3em;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.sem-pedidos .btn-continuar {
+    display: inline-block;
+}
+
+/* ====================== RESPONSIVO ====================== */
+
+@media (max-width: 768px) {
+    .pedidos-main {
+        padding: 100px 15px 30px;
+    }
+    
+    .pedidos-titulo {
+        font-size: 2em;
+    }
+    
+    .pedido-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .produto-pedido {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .produto-info-pedido {
+        width: 100%;
+    }
+    
+    .acoes-pedido {
+        flex-direction: column;
+    }
+    
+    .acoes-pedidos {
+        flex-direction: column;
+    }
+    
+    .btn-trocar,
+    .btn-continuar {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

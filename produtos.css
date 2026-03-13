@@ -1,61 +1,57 @@
-/* ====================== ESTILOS FODAS PARA PRODUTOS ====================== */
+/* ====================== PRODUTOS.CSS ====================== */
 
 .pagina-produtos {
     padding: 120px 20px 40px;
     max-width: 1400px;
     margin: 0 auto;
+    min-height: 100vh;
 }
 
 .container-produtos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 30px;
-    padding: 20px;
+    animation: fadeIn 0.5s ease;
 }
 
-/* CARD DE PRODUTO - VERSÃO FODA */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====================== CARD DO PRODUTO ====================== */
+
 .produto-card {
     background: white;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
-    animation: fadeInUp 0.6s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .produto-card:hover {
-    transform: translateY(-15px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(16, 93, 170, 0.3);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(16, 93, 170, 0.2);
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* ====================== IMAGEM DO TAMANHO CERTO ====================== */
 
-/* IMAGEM DO PRODUTO */
 .produto-imagem {
     width: 100%;
     height: 280px;
     overflow: hidden;
-    position: relative;
     background: linear-gradient(45deg, #f5f5f5, #e0e0e0);
+    position: relative;
 }
 
 .produto-imagem img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s;
+    object-fit: cover;  /* ✅ NÃO DISTORCE A IMAGEM */
+    transition: transform 0.6s ease;
 }
 
 .produto-card:hover .produto-imagem img {
@@ -69,37 +65,41 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.5));
+    background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.1));
     pointer-events: none;
 }
 
-/* INFO DO PRODUTO */
+/* ====================== INFORMAÇÕES DO PRODUTO ====================== */
+
 .produto-info {
     padding: 25px;
     background: linear-gradient(135deg, #fff, #f8f9fa);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .produto-info h2 {
-    font-size: 24px;
+    font-size: 1.5em;
     margin: 0 0 10px;
-    color: #105daa;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: #406385;
+    font-weight: 700;
 }
 
 .produto-info p {
     color: #666;
     line-height: 1.6;
     margin-bottom: 15px;
-    font-size: 15px;
+    font-size: 0.95em;
+    flex: 1;
 }
 
-/* PREÇO */
+/* ====================== PREÇO ====================== */
+
 .produto-preco {
-    font-size: 32px;
+    font-size: 2em;
     font-weight: 900;
-    color: #105daa;
+    color: #28a745;
     margin: 15px 0;
     display: flex;
     align-items: center;
@@ -108,34 +108,37 @@
 
 .produto-preco::before {
     content: '💰';
-    font-size: 28px;
+    font-size: 1.5em;
     filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
 }
 
-/* BOTÕES FODAS */
+/* ====================== BOTÕES ====================== */
+
 .produto-botoes {
     display: flex;
     gap: 15px;
-    margin-top: 20px;
+    margin-top: auto;
 }
 
-.produto-botoes button {
+.btn-adicionar,
+.btn-comprar {
     flex: 1;
-    padding: 18px 20px;
-    font-size: 16px;
+    padding: 15px 20px;
+    font-size: 1em;
     font-weight: 800;
     border: none;
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-.produto-botoes button::before {
+.btn-adicionar::before,
+.btn-comprar::before {
     content: '';
     position: absolute;
     top: 50%;
@@ -143,67 +146,44 @@
     width: 0;
     height: 0;
     border-radius: 50%;
-    background: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.3);
     transform: translate(-50%, -50%);
     transition: width 0.6s, height 0.6s;
 }
 
-.produto-botoes button:hover::before {
+.btn-adicionar:hover::before,
+.btn-comprar:hover::before {
     width: 300px;
     height: 300px;
 }
 
-.produto-botoes button:first-child {
-    background: linear-gradient(135deg, #105daa, #0a3d7a);
+.btn-adicionar {
+    background: linear-gradient(135deg, #406385, #2c4a6e);
     color: white;
 }
 
-.produto-botoes button:first-child:hover {
-    background: linear-gradient(135deg, #0a3d7a, #062b54);
-    transform: scale(1.05);
+.btn-adicionar:hover {
+    background: linear-gradient(135deg, #2c4a6e, #1a2a38);
+    transform: translateY(-2px);
 }
 
-.produto-botoes button:last-child {
+.btn-comprar {
     background: linear-gradient(135deg, #28a745, #1e7e34);
     color: white;
 }
 
-.produto-botoes button:last-child:hover {
+.btn-comprar:hover {
     background: linear-gradient(135deg, #1e7e34, #145523);
-    transform: scale(1.05);
+    transform: translateY(-2px);
 }
 
-/* BOTÃO DE VOLTAR AO TOPO (opcional) */
-.back-to-top {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    background: #105daa;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 24px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transition: all 0.3s;
-    z-index: 1000;
-}
+/* ====================== ESTADOS DE CARREGAMENTO ====================== */
 
-.back-to-top:hover {
-    transform: translateY(-5px);
-    background: #0a3d7a;
-}
-
-/* ANIMAÇÃO DE CARREGAMENTO (SKELETON) */
-.produto-card.skeleton {
+.produto-card.carregando {
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
     animation: loading 1.5s infinite;
+    min-height: 400px;
 }
 
 @keyframes loading {
@@ -211,7 +191,100 @@
     100% { background-position: -200% 0; }
 }
 
-/* RESPONSIVIDADE */
+/* ====================== PRODUTO ESGOTADO ====================== */
+
+.produto-card.esgotado {
+    opacity: 0.7;
+    filter: grayscale(50%);
+}
+
+.produto-card.esgotado .btn-adicionar,
+.produto-card.esgotado .btn-comprar {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+.produto-card.esgotado .btn-adicionar:hover,
+.produto-card.esgotado .btn-comprar:hover {
+    transform: none;
+}
+
+/* ====================== BADGES ====================== */
+
+.produto-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #ff4757;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 25px;
+    font-size: 0.9em;
+    font-weight: bold;
+    z-index: 10;
+    box-shadow: 0 3px 10px rgba(255,71,87,0.3);
+    animation: pulse 2s infinite;
+}
+
+.produto-badge.novo {
+    background: #28a745;
+}
+
+.produto-badge.promocao {
+    background: #ffc107;
+    color: #333;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ====================== AVALIAÇÕES ====================== */
+
+.produto-rating {
+    display: flex;
+    gap: 5px;
+    margin: 10px 0;
+    color: #ffc107;
+    font-size: 1.2em;
+}
+
+/* ====================== ESTOQUE ====================== */
+
+.produto-stock {
+    color: #28a745;
+    font-size: 0.9em;
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.produto-stock::before {
+    content: '✅';
+    font-size: 1em;
+}
+
+.produto-stock.baixo {
+    color: #ffc107;
+}
+
+.produto-stock.baixo::before {
+    content: '⚠️';
+}
+
+.produto-stock.esgotado {
+    color: #dc3545;
+}
+
+.produto-stock.esgotado::before {
+    content: '❌';
+}
+
+/* ====================== RESPONSIVIDADE ====================== */
+
 @media (max-width: 768px) {
     .pagina-produtos {
         padding: 100px 10px 20px;
@@ -222,69 +295,36 @@
         gap: 20px;
     }
     
+    .produto-imagem {
+        height: 220px;
+    }
+    
     .produto-info h2 {
-        font-size: 20px;
+        font-size: 1.3em;
     }
     
     .produto-preco {
-        font-size: 28px;
+        font-size: 1.8em;
     }
     
     .produto-botoes {
         flex-direction: column;
+        gap: 10px;
     }
     
-    .produto-botoes button {
-        padding: 15px;
-        font-size: 14px;
+    .btn-adicionar,
+    .btn-comprar {
+        padding: 12px;
+        font-size: 0.9em;
     }
 }
 
-/* BADGE DE NOVO/DESTAQUE (opcional) */
-.produto-badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: #ff4757;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 25px;
-    font-size: 14px;
-    font-weight: bold;
-    z-index: 10;
-    box-shadow: 0 3px 10px rgba(255,71,87,0.3);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-/* ESTRELAS DE AVALIAÇÃO (opcional) */
-.produto-rating {
-    display: flex;
-    gap: 5px;
-    margin: 10px 0;
-}
-
-.produto-rating span {
-    color: #ffc107;
-    font-size: 20px;
-}
-
-/* QUANTIDADE EM ESTOQUE (opcional) */
-.produto-stock {
-    color: #28a745;
-    font-size: 14px;
-    margin-top: 5px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.produto-stock::before {
-    content: '✅';
-    font-size: 12px;
+@media (max-width: 480px) {
+    .produto-imagem {
+        height: 180px;
+    }
+    
+    .produto-info {
+        padding: 15px;
+    }
 }

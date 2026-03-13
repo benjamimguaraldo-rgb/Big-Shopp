@@ -30,6 +30,8 @@ SENDER_PASSWORD = "naztcfnpuisfawwi"
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
+    
+    # Tabela de usuários
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,6 +43,8 @@ def init_db():
             token TEXT
         )
     ''')
+    
+    # Tabela de produtos
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS produtos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,14 +54,34 @@ def init_db():
             imagem TEXT
         )
     ''')
-    '''
-CREATE TABLE IF NOT EXISTS carrinhos (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    senha TEXT NOT NULL,
-    produtos TEXT NOT NULL,
-    ultima_atualizacao TIMESTAMP
-)
-'''
+    
+    # ✅ TABELA DE CARRINHOS (ADICIONADA AQUI)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS carrinhos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            senha TEXT NOT NULL,
+            produtos TEXT NOT NULL,
+            ultima_atualizacao TIMESTAMP
+        )
+    ''')
+    
+    # ✅ TABELA DE COMPRAS (se não tiver, adiciona também)
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS compras (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER,
+            nome_cliente TEXT NOT NULL,
+            email_cliente TEXT NOT NULL,
+            cpf_cliente TEXT NOT NULL,
+            endereco_entrega TEXT NOT NULL,
+            produtos TEXT NOT NULL,
+            total REAL NOT NULL,
+            status TEXT DEFAULT 'pagamento_pendente',
+            data_compra TIMESTAMP,
+            FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+        )
+    ''')
+    
     conn.commit()
     conn.close()
 
@@ -283,6 +307,40 @@ def adicionar_ao_carrinho():
             "mensagem": "Produto adicionado!",
             "total": len(produtos)
         }), 200
+        
+    except Exception as e:
+        print(f"❌ Erro: {e}")
+        return jsonify({"erro": str(e)}), 500
+    
+@app.route('/compras/email/<path:email>', methods=['GET'])
+def listar_compras_por_email(email):
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT id, nome_cliente, produtos, total, status, data_compra, endereco_entrega
+            FROM compras
+            WHERE email_cliente = ?
+            ORDER BY data_compra DESC
+        ''', (email,))
+        
+        compras = cursor.fetchall()
+        conn.close()
+        
+        resultado = []
+        for c in compras:
+            resultado.append({
+                "id": c[0],
+                "cliente": c[1],
+                "produtos": json.loads(c[2]),
+                "total": c[3],
+                "status": c[4],
+                "data": c[5],
+                "endereco_entrega": c[6]
+            })
+        
+        return jsonify(resultado), 200
         
     except Exception as e:
         print(f"❌ Erro: {e}")

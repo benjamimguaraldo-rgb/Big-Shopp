@@ -3,54 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Somos a BIG SHOPP, especializada em brindes corporativos personalizados, atendendo empresas que buscam fortalecer sua marca de forma criativa e eficiente. Desenvolvemos brindes para eventos, campanhas promocionais, ações institucionais, datas comemorativas e muito mais.">
+    <meta name="description" content="Big Shop - Seu carrinho de compras">
     <link rel="icon" type="image/png" href="imagens/favicon.png">
     <link rel="stylesheet" href="style.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="imagens/favicon.png">
-    <link rel="icon" type="image/png" href="imagens/favicon.png">
-    <link rel="icon" type="image/png" href="imagens/inox.png">
-    <link rel="icon" type="image/png" href="imagens/logo.png">
     <link rel="stylesheet" href="mobile-automatico.css">
-    <title>Big Shopp Carrinho</title>
+    <link rel="stylesheet" href="carrinho.css">
+    <title>Big Shop - Carrinho</title>
 </head>
 <body class="home">
     <header class="headerprincipal">
-        <img src="imagens/logo.png"
-             alt="Logo Da Big Shop"
-             width="64px"
-             height="64px">
-             <h2>Big Shop</h2>
-            <a href="https://wa.me/5511922207487" target="_blank">
-                <button class="botao">📞 WhatsApp</button>
-            </a>
-
-             <a href=produtos.html>
-               <button class="botao">🛍️ Produtos</button>
-             </a>
-             <a href="home.html">
-                <button class="botao">Pagina Principal</button>
-             </a>
-
-
-             <a href="#">
-                <button class="botao">📦 Meus Pedidos</button>
-             </a>
+        <img src="imagens/logo.png" alt="Logo Big Shop" width="64" height="64">
+        <h2>Big Shop</h2>
+        <a href="https://wa.me/5511922207487" target="_blank">
+            <button class="botao">📞 WhatsApp</button>
+        </a>
+        <a href="produtos.html">
+            <button class="botao">🛍️ Produtos</button>
+        </a>
+        <a href="home.html">
+            <button class="botao">🏠 Página Principal</button>
+        </a>
+        <a href="#">
+            <button class="botao">📦 Meus Pedidos</button>
+        </a>
     </header>
 
-    <main>
-    <h2>Seu Carrinho 🛒</h2>
-    <div id="lista-carrinho" class="lista-carrinho">
+    <main class="carrinho-main">
+        <h1 class="carrinho-titulo">🛒 Seu Carrinho</h1>
+        
+        <!-- TELA DE SENHA (começa visível se não tiver senha) -->
+        <div id="tela-senha" class="tela-senha">
+            <div class="senha-card">
+                <h2>🔐 Identifique-se</h2>
+                <p>Digite sua senha de 4 dígitos para ver seu carrinho:</p>
+                <input type="password" id="senha-input" class="senha-input" maxlength="4" placeholder="0000">
+                <button onclick="verificarSenhaCarrinho()" class="btn-senha">Acessar Carrinho</button>
+                <p id="senha-erro" class="senha-erro"></p>
+                <small>⚠️ Se for novo, crie uma senha de 4 dígitos</small>
+            </div>
         </div>
-    <div class="resumo-carrinho">
-    <h3>Total: R$ <span id="valor-total">0.00</span></h3>
-    <button onclick="finalizarCompra()" class="btn-finalizar">Ir para o Pagamento 💳</button>
-    <a href="produtos.html">Continuar Comprando</a>
-    <br>
-    <button onclick="trocarSenha()" class="btn-trocar-senha">🔄 Trocar Senha / Cliente</button>
-    </div>
+
+        <!-- CONTEÚDO DO CARRINHO (começa escondido) -->
+        <div id="conteudo-carrinho" class="conteudo-carrinho" style="display: none;">
+            <div id="lista-carrinho" class="lista-carrinho">
+                <!-- Itens serão carregados aqui -->
+            </div>
+            
+            <div class="resumo-carrinho">
+                <div class="total-container">
+                    <h3>Total: <span id="valor-total">R$ 0,00</span></h3>
+                </div>
+                
+                <div class="acoes-carrinho">
+                    <button onclick="finalizarCompra()" class="btn-finalizar">
+                        💳 Ir para o Pagamento
+                    </button>
+                    <a href="produtos.html" class="btn-continuar">
+                        🛍️ Continuar Comprando
+                    </a>
+                    <button onclick="trocarSenha()" class="btn-trocar-senha">
+                        🔄 Trocar Senha
+                    </button>
+                    <button onclick="limparCarrinho()" class="btn-limpar">
+                        🗑️ Limpar Carrinho
+                    </button>
+                </div>
+            </div>
+        </div>
     </main>
-    <script src="carrinho.js"></script>
-    <script src="carrinho-senha.js"></script>
+
+    <script src="carrinho-novo.js"></script>
     <script src="mobile-automatico.js"></script>
 </body>
 </html>
