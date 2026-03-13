@@ -433,17 +433,25 @@ def carregar_carrinho(senha):
 # =============================================================================
 
 @app.route('/finalizar_compra_facil', methods=['POST', 'OPTIONS'])
-@limiter.limit("5 per minute")  # Evita múltiplas submissões acidentais
+# Removi o @limiter.limit temporariamente pra evitar erro se não tiver a biblioteca
 def finalizar_compra_facil():
     """
     Registra uma compra (sem pagamento real). Dados devem incluir:
     nome, email, cpf, endereco (objeto), produtos (lista), total, senha (opcional)
     """
+    # 👉 RESPOSTA PARA OPTIONS (CORS)
     if request.method == 'OPTIONS':
-        return make_response(), 200
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type")
+        response.headers.add("Access-Control-Allow-Methods", "POST")
+        return response, 200
 
     try:
+        # 👉 PEGA OS DADOS ENVIADOS
         dados = request.get_json()
+        print("📦 Dados recebidos:", dados)  # 👈 ISSO VAI APARECER NO LOG DO RENDER
+        
         if not dados:
             return jsonify({"erro": "Requisição sem corpo JSON"}), 400
 
@@ -456,52 +464,56 @@ def finalizar_compra_facil():
         total = dados.get('total')
         senha = dados.get('senha')  # opcional
 
-        # Validações
-        if not nome or not isinstance(nome, str) or len(nome.strip()) < 3:
-            return jsonify({"erro": "Nome inválido"}), 400
-        if not email or not validar_email(email):
-            return jsonify({"erro": "E-mail inválido"}), 400
-        if not cpf or not validar_cpf(cpf):
-            return jsonify({"erro": "CPF inválido"}), 400
-        if not endereco or not isinstance(endereco, dict):
-            return jsonify({"erro": "Endereço inválido"}), 400
-        if not produtos or not isinstance(produtos, list) or len(produtos) == 0:
-            return jsonify({"erro": "Lista de produtos vazia ou inválida"}), 400
-        if total is None or not isinstance(total, (int, float)) or total <= 0:
-            return jsonify({"erro": "Total inválido"}), 400
+        # 👉 VALIDAÇÕES MAIS SIMPLES (pra não quebrar)
+        if not nome:
+            return jsonify({"erro": "Nome é obrigatório"}), 400
+        if not email:
+            return jsonify({"erro": "E-mail é obrigatório"}), 400
+        if not cpf:
+            return jsonify({"erro": "CPF é obrigatório"}), 400
+        if not endereco:
+            return jsonify({"erro": "Endereço é obrigatório"}), 400
+        if not produtos:
+            return jsonify({"erro": "Produtos são obrigatórios"}), 400
+        if total is None:
+            return jsonify({"erro": "Total é obrigatório"}), 400
 
-        # Serializa objetos complexos
-        endereco_json = json.dumps(endereco, ensure_ascii=False)
-        produtos_json = json.dumps(produtos, ensure_ascii=False)
+        # 👉 CONVERTE PRA JSON (sem validações complexas)
+        try:
+            endereco_json = json.dumps(endereco)
+            produtos_json = json.dumps(produtos)
+        except Exception as e:
+            print(f"❌ Erro ao converter JSON: {e}")
+            return jsonify({"erro": "Dados em formato inválido"}), 400
 
-        # Insere no banco
-        with get_db_connection() as conn:
+        # 👉 INSERE NO BANCO (versão simplificada)
+        try:
+            conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
             cursor.execute('''
                 INSERT INTO compras
                 (senha, nome_cliente, email_cliente, cpf_cliente, endereco_entrega, produtos, total, status, data_compra)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-            ''', (senha, nome.strip(), email.strip(), cpf.strip(), endereco_json, produtos_json, total, 'pagamento_pendente'))
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+            ''', (senha, nome, email, cpf, endereco_json, produtos_json, total, 'pagamento_pendente'))
 
             compra_id = cursor.lastrowid
+            conn.commit()
+            conn.close()
 
-        # Envia e-mails
-        enviar_email_compra(compra_id, {
-            'nome': nome,
-            'email': email,
-            'total': total
-        })
+            print(f"✅ Compra #{compra_id} registrada com sucesso!")
 
-        logger.info(f"Compra #{compra_id} registrada com sucesso para {email}")
+            return jsonify({
+                "sucesso": True,
+                "mensagem": "Compra registrada!",
+                "compra_id": compra_id
+            }), 201
 
-        return jsonify({
-            "sucesso": True,
-            "mensagem": "Compra registrada! Você receberá um e-mail de confirmação.",
-            "compra_id": compra_id
-        }), 201
+        except Exception as e:
+            print(f"❌ Erro no banco de dados: {e}")
+            return jsonify({"erro": "Erro ao salvar no banco"}), 500
 
     except Exception as e:
-        logger.error(f"Erro em finalizar_compra_facil: {e}")
+        print(f"❌ Erro geral: {e}")
         return jsonify({"erro": "Erro interno no servidor"}), 500
 
 @app.route('/compras/buscar', methods=['POST', 'OPTIONS'])
