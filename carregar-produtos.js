@@ -1,71 +1,38 @@
-// ====================== CARREGAR-PRODUTOS.JS ======================
-// (assumindo que config.js já carrega a API)
+// ====================== CONFIGURAÇÃO ======================
+const API = "https://big-shopp.onrender.com";
 
-// ====================== CARREGAR PRODUTOS ======================
+// ====================== FUNÇÕES DE SENHA ======================
 
-function carregarProdutos() {
-    console.log("📦 Carregando produtos fixos...");
-    
-    const container = document.querySelector(".container-produtos");
-    if (!container) {
-        console.error("❌ Container não encontrado!");
-        return;
-    }
-    
-    container.innerHTML = "";
-
-    PRODUTOS.forEach(p => {
-        const produtoJSON = JSON.stringify(p).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-        
-        const card = document.createElement("div");
-        card.className = "produto-card";
-        
-        // 👉 CRIA OS BOTÕES COM FUNÇÕES GLOBAIS
-        card.innerHTML = `
-            <div class="produto-imagem">
-                <img src="${p.imagem}" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/300x280'">
-            </div>
-            <div class="produto-info">
-                <h2>${p.nome}</h2>
-                <p>${p.descricao}</p>
-                <div class="produto-preco">R$ ${p.preco.toFixed(2)}</div>
-                <div class="produto-botoes">
-                    <button class="btn-adicionar" onclick='adicionarAoCarrinho(${produtoJSON})'>
-                        🛒 ADICIONAR
-                    </button>
-                    <button class="btn-comprar" onclick='comprarAgora(${produtoJSON})'>
-                        💳 COMPRAR AGORA
-                    </button>
-                </div>
-            </div>
-        `;
-        container.appendChild(card);
-    });
-}
-
-// ====================== FUNÇÃO ADICIONAR AO CARRINHO (COM PEDIDO DE SENHA) ======================
-
-window.adicionarAoCarrinho = async function(produto) {
-    console.log("🛒 Adicionando ao carrinho:", produto);
-    
-    // 👉 VERIFICA SE JÁ TEM SENHA
+function getSenha() {
     let senha = localStorage.getItem('senha_carrinho');
     
-    // 👉 SE NÃO TIVER, PEDE AGORA!
     if (!senha) {
         senha = prompt("🔐 DIGITE SUA SENHA DE 4 DÍGITOS (CRIE UMA AGORA):", "0000");
         
-        if (!senha || senha.length < 4) {
-            alert('❌ Senha inválida! Use 4 dígitos.');
-            return;
+        // Validação
+        if (!senha || senha.length !== 4 || isNaN(senha)) {
+            alert('❌ Senha inválida! Use 4 dígitos numéricos.');
+            return null;
         }
         
         localStorage.setItem('senha_carrinho', senha);
         alert('✅ Senha criada com sucesso!');
     }
     
+    return senha;
+}
+
+// ====================== FUNÇÃO ADICIONAR AO CARRINHO ======================
+
+async function adicionarAoCarrinho(produto) {
+    console.log("🛒 Adicionando ao carrinho:", produto);
+    
+    // 👉 PEDE A SENHA
+    const senha = getSenha();
+    if (!senha) return;
+    
     try {
-        // Carrega carrinho atual
+        // Carrega carrinho atual do servidor
         const response = await fetch(`${API}/carrinho/carregar/${senha}`);
         const data = await response.json();
         let carrinho = data.produtos || [];
@@ -96,29 +63,18 @@ window.adicionarAoCarrinho = async function(produto) {
         console.error("❌ Erro:", error);
         alert('Erro ao adicionar produto. Verifique o servidor.');
     }
-};
+}
 
 // ====================== FUNÇÃO COMPRAR AGORA ======================
 
-window.comprarAgora = async function(produto) {
+function comprarAgora(produto) {
     console.log("🛒 Comprar agora:", produto);
     
-    // 👉 VERIFICA SENHA
-    let senha = localStorage.getItem('senha_carrinho');
+    // 👉 PEDE A SENHA
+    const senha = getSenha();
+    if (!senha) return;
     
-    if (!senha) {
-        senha = prompt("🔐 DIGITE SUA SENHA DE 4 DÍGITOS (CRIE UMA AGORA):", "0000");
-        
-        if (!senha || senha.length < 4) {
-            alert('❌ Senha inválida! Use 4 dígitos.');
-            return;
-        }
-        
-        localStorage.setItem('senha_carrinho', senha);
-        alert('✅ Senha criada com sucesso!');
-    }
-    
-    // Cria carrinho temporário
+    // Cria um carrinho temporário só com este produto
     const carrinhoTemp = [{
         id: produto.id,
         nome: produto.nome,
@@ -127,15 +83,52 @@ window.comprarAgora = async function(produto) {
         quantidade: 1
     }];
     
-    // Salva no sessionStorage
+    // Salva no sessionStorage para o checkout
     sessionStorage.setItem('checkout_produtos', JSON.stringify(carrinhoTemp));
     sessionStorage.setItem('checkout_senha', senha);
     
-    // Vai pro checkout
+    // Vai direto pro checkout
     window.location.href = 'checkout.html';
-};
+}
+
+// ====================== CARREGAR PRODUTOS ======================
+
+function carregarProdutos() {
+    console.log("📦 Carregando produtos fixos...");
+    
+    const container = document.querySelector(".container-produtos");
+    if (!container) return;
+    
+    container.innerHTML = "";
+
+    PRODUTOS.forEach(p => {
+        const produtoJSON = JSON.stringify(p).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+        
+        const card = document.createElement("div");
+        card.className = "produto-card";
+        
+        card.innerHTML = `
+            <div class="produto-imagem">
+                <img src="${p.imagem}" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/300x280'">
+            </div>
+            <div class="produto-info">
+                <h2>${p.nome}</h2>
+                <p>${p.descricao}</p>
+                <div class="produto-preco">R$ ${p.preco.toFixed(2)}</div>
+                <div class="produto-botoes">
+                    <button class="btn-adicionar" onclick='adicionarAoCarrinho(${produtoJSON})'>
+                        🛒 ADICIONAR
+                    </button>
+                    <button class="btn-comprar" onclick='comprarAgora(${produtoJSON})'>
+                        💳 COMPRAR AGORA
+                    </button>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
 
 // ====================== INICIALIZAÇÃO ======================
 
-// Carrega produtos quando a página abrir
 document.addEventListener('DOMContentLoaded', carregarProdutos);

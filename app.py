@@ -185,9 +185,14 @@ def enviar_email_compra(compra_id, dados, email_admin=True):
 # =============================================================================
 
 def init_db():
+    """Cria todas as tabelas necessárias, se não existirem."""
     logger.info("Inicializando banco de dados...")
+    
+    # 👉 TUDO DENTRO DO WITH
     with get_db_connection() as conn:
         cursor = conn.cursor()
+
+        # Tabela de carrinhos
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS carrinhos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -199,6 +204,7 @@ def init_db():
         ''')
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_carrinhos_senha ON carrinhos(senha)')
 
+        # Tabela de compras
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS compras (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -210,17 +216,16 @@ def init_db():
                 produtos TEXT NOT NULL,
                 total REAL NOT NULL,
                 status TEXT DEFAULT 'pagamento_pendente',
-                pagamento_id TEXT,
-                pagamento_detalhes TEXT,
-                data_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                ultima_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                observacoes TEXT
+                data_compra TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+
+        # Índices para compras
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_compras_status ON compras(status)')
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_compras_email ON compras(email_cliente)')
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_compras_data ON compras(data_compra)')
 
+        # Tabela de logs
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -230,9 +235,14 @@ def init_db():
                 criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+
+        # Commit dentro do with
         conn.commit()
+    
+    # Log fora do with (após conexão fechada)
     logger.info("Banco de dados inicializado com sucesso.")
 
+# Chama a função (FORA da definição)
 init_db()
 
 # =============================================================================
