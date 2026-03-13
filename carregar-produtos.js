@@ -1,5 +1,4 @@
-// ====================== CONFIGURAÇÃO ======================
-const API = "https://big-shopp.onrender.com";
+
 
 // ====================== FUNÇÕES DE SENHA ======================
 
