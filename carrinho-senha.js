@@ -1,7 +1,4 @@
 
-
-// ====================== GERENCIAMENTO DE SENHA ======================
-
 // Pega a senha do localStorage ou pergunta
 function getSenhaUsuario() {
     let senha = localStorage.getItem('senha_carrinho');
