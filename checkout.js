@@ -2,16 +2,14 @@
 // ====================== CARREGAR RESUMO DO PEDIDO ======================
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("📄 Página de checkout carregada");
+    console.log("📄 Checkout carregado");
     
-    // Pega produtos do sessionStorage
-    const produtos = JSON.parse(sessionStorage.getItem('checkout_produtos')) || [];
-    const senha = sessionStorage.getItem('checkout_senha') || localStorage.getItem('senha_carrinho');
+    // 👉 VERIFICA O QUE TEM NO SESSIONSTORAGE
+    const produtos = JSON.parse(sessionStorage.getItem('checkout_produtos'));
     
-    console.log("📦 Produtos:", produtos);
-    console.log("🔐 Senha:", senha);
+    console.log("📦 Produtos no sessionStorage:", produtos);
     
-    if (produtos.length === 0) {
+    if (!produtos || produtos.length === 0) {
         alert('❌ Nenhum produto para finalizar!');
         window.location.href = 'produtos.html';
         return;
