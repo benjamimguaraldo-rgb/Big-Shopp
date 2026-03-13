@@ -1,4 +1,4 @@
-const API = "https://big-shopp.onrender.com";
+
 
 // ====================== SISTEMA DE SENHA ======================
 

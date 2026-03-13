@@ -1,4 +1,4 @@
-const API = "https://big-shopp.onrender.com";
+
 
 // Carrega o carrinho e mostra no resumo
 function carregarResumo() {

@@ -1,4 +1,4 @@
-const API = "https://big-shopp.onrender.com";
+
 let todosPedidos = [];
 let emailCliente = null;
 let senhaCliente = null;
