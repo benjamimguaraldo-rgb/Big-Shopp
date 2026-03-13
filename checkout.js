@@ -1,6 +1,5 @@
-
-
 // CARREGAR PRODUTOS AO ABRIR A PÁGINA
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log("📄 Página de checkout carregada");
     
@@ -16,11 +15,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // 👉 MOSTRA OS PRODUTOS NA TELA
-    const container = document.getElementById('lista-produtos');
-    const totalEl = document.getElementById('total-compra');
+    const container = document.getElementById('itens-carrinho'); // ID CORRETO
+    const totalEl = document.getElementById('total-valor'); // ID CORRETO
     
     if (!container) {
-        console.error("❌ Elemento 'lista-produtos' não encontrado no HTML!");
+        console.error("❌ Elemento 'itens-carrinho' não encontrado no HTML!");
         return;
     }
     
@@ -32,14 +31,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const subtotal = item.preco * qtd;
         total += subtotal;
         
+        // Adaptei o estilo para combinar com as classes que você já tem no CSS
         container.innerHTML += `
-            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 15px; padding: 10px; border-bottom: 1px solid #ddd;">
-                <img src="${item.imagem}" alt="${item.nome}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
-                <div style="flex: 1;">
-                    <h4 style="margin: 0;">${item.nome}</h4>
-                    <p style="margin: 5px 0;">Quantidade: ${qtd}</p>
+            <div class="item-resumo">
+                <img src="${item.imagem}" alt="${item.nome}">
+                <div class="item-resumo-info">
+                    <p><strong>${item.nome}</strong></p>
+                    <small>${qtd}x R$ ${item.preco.toFixed(2)}</small>
                 </div>
-                <div style="font-weight: bold; color: #28a745;">
+                <div class="item-resumo-preco">
                     R$ ${subtotal.toFixed(2)}
                 </div>
             </div>
@@ -64,6 +64,7 @@ async function finalizarCompra() {
     const bairro = document.getElementById('bairro')?.value;
     const cidade = document.getElementById('cidade')?.value;
     const cep = document.getElementById('cep')?.value;
+    const complemento = document.getElementById('complemento')?.value || '';
     
     // VALIDAÇÕES
     if (!nome || !email || !cpf || !rua || !numero || !bairro || !cidade || !cep) {
@@ -94,6 +95,7 @@ async function finalizarCompra() {
         endereco: {
             rua: rua,
             numero: numero,
+            complemento: complemento,
             bairro: bairro,
             cidade: cidade,
             cep: cep
