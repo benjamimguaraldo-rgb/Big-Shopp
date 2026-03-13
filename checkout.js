@@ -1,13 +1,14 @@
+// ====================== CHECKOUT.JS ======================
+const API = "https://big-shopp.onrender.com";
 
-// ====================== CARREGAR RESUMO DO PEDIDO ======================
-
+// CARREGAR PRODUTOS AO ABRIR A PÁGINA
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("📄 Checkout carregado");
+    console.log("📄 Página de checkout carregada");
     
-    // 👉 VERIFICA O QUE TEM NO SESSIONSTORAGE
+    // 👉 PEGA PRODUTOS DO SESSIONSTORAGE
     const produtos = JSON.parse(sessionStorage.getItem('checkout_produtos'));
     
-    console.log("📦 Produtos no sessionStorage:", produtos);
+    console.log("📦 Produtos encontrados:", produtos);
     
     if (!produtos || produtos.length === 0) {
         alert('❌ Nenhum produto para finalizar!');
@@ -15,14 +16,14 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    carregarResumo(produtos);
-});
-
-function carregarResumo(produtos) {
+    // 👉 MOSTRA OS PRODUTOS NA TELA
     const container = document.getElementById('lista-produtos');
     const totalEl = document.getElementById('total-compra');
     
-    if (!container) return;
+    if (!container) {
+        console.error("❌ Elemento 'lista-produtos' não encontrado no HTML!");
+        return;
+    }
     
     let total = 0;
     container.innerHTML = '';
@@ -33,13 +34,15 @@ function carregarResumo(produtos) {
         total += subtotal;
         
         container.innerHTML += `
-            <div class="item-resumo">
-                <img src="${item.imagem}" alt="${item.nome}" style="width:60px;height:60px;object-fit:cover;">
-                <div>
-                    <h4>${item.nome}</h4>
-                    <p>${qtd}x R$ ${item.preco.toFixed(2)}</p>
+            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 15px; padding: 10px; border-bottom: 1px solid #ddd;">
+                <img src="${item.imagem}" alt="${item.nome}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+                <div style="flex: 1;">
+                    <h4 style="margin: 0;">${item.nome}</h4>
+                    <p style="margin: 5px 0;">Quantidade: ${qtd}</p>
                 </div>
-                <span>R$ ${subtotal.toFixed(2)}</span>
+                <div style="font-weight: bold; color: #28a745;">
+                    R$ ${subtotal.toFixed(2)}
+                </div>
             </div>
         `;
     });
@@ -47,14 +50,13 @@ function carregarResumo(produtos) {
     if (totalEl) {
         totalEl.textContent = `R$ ${total.toFixed(2)}`;
     }
-}
+});
 
-// ====================== FINALIZAR COMPRA ======================
-
+// FUNÇÃO PARA FINALIZAR COMPRA
 async function finalizarCompra() {
     console.log("🛒 Finalizando compra...");
     
-    // PEGA OS DADOS DO FORMULÁRIO
+    // PEGA DADOS DO FORMULÁRIO
     const nome = document.getElementById('nome')?.value;
     const email = document.getElementById('email')?.value;
     const cpf = document.getElementById('cpf')?.value;
@@ -71,12 +73,11 @@ async function finalizarCompra() {
     }
     
     // PEGA PRODUTOS E SENHA
-    const produtos = JSON.parse(sessionStorage.getItem('checkout_produtos')) || [];
-    const senha = sessionStorage.getItem('checkout_senha') || localStorage.getItem('senha_carrinho');
+    const produtos = JSON.parse(sessionStorage.getItem('checkout_produtos'));
+    const senha = localStorage.getItem('senha_carrinho');
     
-    if (produtos.length === 0) {
-        alert('❌ Nenhum produto para finalizar!');
-        window.location.href = 'produtos.html';
+    if (!produtos || produtos.length === 0) {
+        alert('❌ Nenhum produto no carrinho!');
         return;
     }
     
@@ -86,73 +87,56 @@ async function finalizarCompra() {
         total += item.preco * (item.quantidade || 1);
     });
     
-    // MONTA OBJETO DO ENDEREÇO
-    const endereco = {
-        rua: rua,
-        numero: numero,
-        bairro: bairro,
-        cidade: cidade,
-        cep: cep
-    };
-    
     // MONTA DADOS PARA ENVIAR
-    const dadosParaEnviar = {
+    const dados = {
         nome: nome,
         email: email,
         cpf: cpf,
-        endereco: endereco,
+        endereco: {
+            rua: rua,
+            numero: numero,
+            bairro: bairro,
+            cidade: cidade,
+            cep: cep
+        },
         produtos: produtos,
         total: total,
         senha: senha
     };
     
-    console.log("📦 Dados sendo enviados:", dadosParaEnviar);
+    console.log("📦 Dados a enviar:", dados);
     
     try {
-        // 👉 FETCH COM AWAIT (CORRETO!)
         const response = await fetch(`${API}/finalizar_compra_facil`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(dadosParaEnviar)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
         });
         
-        // 👉 PEGA RESPOSTA COMO JSON
         const data = await response.json();
-        
-        console.log("📨 Resposta do servidor:", data);
-        console.log("📨 Status:", response.status);
+        console.log("📨 Resposta:", data);
         
         if (response.ok) {
             alert('✅ Compra finalizada com sucesso!');
-            
-            // LIMPA DADOS DA SESSÃO
             sessionStorage.removeItem('checkout_produtos');
             sessionStorage.removeItem('checkout_senha');
-            
-            // REDIRECIONA
             window.location.href = 'meus-pedidos.html';
         } else {
             alert(`❌ Erro: ${data.erro || 'Erro desconhecido'}`);
         }
-        
     } catch (error) {
-        console.error('❌ Erro no fetch:', error);
-        alert('❌ Erro ao conectar com o servidor. Tente novamente.');
+        console.error('❌ Erro:', error);
+        alert('❌ Erro ao conectar com o servidor');
     }
 }
 
-// ====================== BUSCAR CEP (OPCIONAL) ======================
-
+// BUSCAR CEP AUTOMÁTICO (OPCIONAL)
 document.getElementById('cep')?.addEventListener('blur', async function() {
     const cep = this.value.replace(/\D/g, '');
-    
     if (cep.length === 8) {
         try {
             const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
             const dados = await response.json();
-            
             if (!dados.erro) {
                 document.getElementById('rua').value = dados.logradouro;
                 document.getElementById('bairro').value = dados.bairro;
