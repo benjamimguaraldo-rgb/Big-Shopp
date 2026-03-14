@@ -132,3 +132,40 @@ function trocarSenha() {
         window.location.href = 'produtos.html';
     }
 }
+
+// ====================== VERIFICAR SENHA NO CARRINHO ======================
+
+async function verificarSenhaCarrinho() {
+    console.log("🔐 Verificando senha no carrinho...");
+    
+    const senhaInput = document.getElementById('senha-input');
+    const erroEl = document.getElementById('senha-erro');
+    
+    if (!senhaInput || !erroEl) {
+        console.error("❌ Elementos de senha não encontrados");
+        return;
+    }
+    
+    const senha = senhaInput.value;
+    
+    if (!senha || senha.length !== 4 || isNaN(senha)) {
+        erroEl.textContent = '❌ Digite uma senha válida de 4 dígitos';
+        return;
+    }
+    
+    // Salva no localStorage
+    localStorage.setItem('senha_carrinho', senha);
+    
+    // Carrega o carrinho do servidor
+    await carregarCarrinhoServidor(senha);
+    
+    // Esconde tela de senha e mostra carrinho
+    const telaSenha = document.getElementById('tela-senha');
+    const conteudoCarrinho = document.getElementById('conteudo-carrinho');
+    
+    if (telaSenha) telaSenha.style.display = 'none';
+    if (conteudoCarrinho) conteudoCarrinho.style.display = 'block';
+}
+
+// Torna a função global
+window.verificarSenhaCarrinho = verificarSenhaCarrinho;

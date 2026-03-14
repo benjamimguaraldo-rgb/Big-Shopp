@@ -4,9 +4,9 @@
 const PRODUTOS = [
     {
         id: 1,
-        nome: "Copo Inox Personalizado",
-        descricao: "Um Copo Inox pode manter sua bebida gelada por muito tempo! um ótimo brinde!",
-        preco: 60,
+        nome: "Copo Stanley Personalizado",
+        descricao: "Um Copo Stanley pode manter sua bebida gelada por muito tempo! um ótimo brinde!",
+        preco: 45,
         imagem: "https://files.catbox.moe/92a9n0.png"
     },
     {
