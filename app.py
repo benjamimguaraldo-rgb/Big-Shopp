@@ -681,6 +681,38 @@ def internal_error(error):
     logger.error(f"Erro interno: {error}")
     return jsonify({"erro": "Erro interno do servidor"}), 500
 
+@app.route('/compras/email/<path:email>', methods=['GET'])
+def listar_compras_por_email(email):
+    """
+    Retorna todas as compras de um cliente pelo email.
+    """
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT id, nome_cliente, produtos, total, status, data_compra
+                FROM compras
+                WHERE email_cliente = ?
+                ORDER BY data_compra DESC
+            ''', (email,))
+            rows = cursor.fetchall()
+
+        compras = []
+        for r in rows:
+            compras.append({
+                "id": r[0],
+                "cliente": r[1],
+                "produtos": json.loads(r[2]),
+                "total": r[3],
+                "status": r[4],
+                "data": r[5]
+            })
+        return jsonify(compras), 200
+
+    except Exception as e:
+        logger.error(f"Erro ao buscar compras por email: {e}")
+        return jsonify({"erro": "Erro interno"}), 500
+
 # =============================================================================
 # PONTO DE ENTRADA
 # =============================================================================
