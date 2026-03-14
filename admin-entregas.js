@@ -73,6 +73,8 @@ async function carregarPedidos() {
     }
 }
 
+// ====================== EXIBIR PEDIDOS ======================
+
 function exibirPedidos(pedidos) {
     const container = document.getElementById('pedidos-container');
     if (!container) return;
@@ -104,6 +106,28 @@ function exibirPedidos(pedidos) {
         </div>
     `).join('');
 }
+    
+    container.innerHTML = pedidos.map(p => `
+        <div class="pedido-card status-${p.status}">
+            <div class="pedido-header">
+                <span class="pedido-id">#${p.id}</span>
+                <span class="pedido-data">${new Date(p.data).toLocaleString()}</span>
+            </div>
+            <div class="pedido-cliente">
+                <h3>${p.cliente}</h3>
+                <p>📧 ${p.email}</p>
+            </div>
+            <div class="pedido-total">💰 R$ ${p.total.toFixed(2)}</div>
+            <select class="status-select" id="status-${p.id}">
+                <option value="pagamento_pendente" ${p.status === 'pagamento_pendente' ? 'selected' : ''}>⏳ Pendente</option>
+                <option value="pago" ${p.status === 'pago' ? 'selected' : ''}>💰 Pago</option>
+                <option value="enviado" ${p.status === 'enviado' ? 'selected' : ''}>🚚 Enviado</option>
+                <option value="entregue" ${p.status === 'entregue' ? 'selected' : ''}>✅ Entregue</option>
+                <option value="cancelado" ${p.status === 'cancelado' ? 'selected' : ''}>❌ Cancelado</option>
+            </select>
+            <button class="btn-atualizar" onclick="atualizarStatus(${p.id})">Atualizar</button>
+        </div>
+    `).join('');
 
 // ====================== ATUALIZAR STATUS (VERSÃO URGENTE) ======================
 
@@ -160,6 +184,42 @@ async function atualizarStatus(compraId) {
         select.value = select.getAttribute('data-valor-original');
     }
 }
+
+// ====================== FILTRAR PEDIDOS (CORRIGIDO) ======================
+
+function filtrarPedidos(status, event) {
+    console.log("🔍 Filtrando pedidos por status:", status);
+    
+    // Pega todos os pedidos (assumindo que 'todosPedidos' está definido)
+    if (!todosPedidos || todosPedidos.length === 0) {
+        console.warn("Nenhum pedido para filtrar");
+        return;
+    }
+    
+    let pedidosFiltrados;
+    
+    if (status === 'todos') {
+        pedidosFiltrados = todosPedidos;
+    } else {
+        pedidosFiltrados = todosPedidos.filter(p => p.status === status);
+    }
+    
+    // Atualiza a exibição
+    exibirPedidos(pedidosFiltrados);
+    
+    // Atualiza a classe dos botões de filtro
+    document.querySelectorAll('.filtro-btn').forEach(btn => {
+        btn.classList.remove('ativo');
+    });
+    
+    // Adiciona classe 'ativo' ao botão clicado (usando o event)
+    if (event && event.target) {
+        event.target.classList.add('ativo');
+    }
+}
+
+// Torna a função global
+window.filtrarPedidos = filtrarPedidos;
 
 // Atalho Enter
 document.addEventListener('keypress', function(e) {

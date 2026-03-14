@@ -11,12 +11,12 @@
     <h1>📦 ADMIN - Gerenciar Entregas</h1>
     
     <div class="filtros">
-        <button class="filtro-btn ativo" onclick="filtrarPedidos('todos')">Todos</button>
-        <button class="filtro-btn" onclick="filtrarPedidos('pagamento_pendente')">⏳ Pendentes</button>
-        <button class="filtro-btn" onclick="filtrarPedidos('pago')">💰 Pagos</button>
-        <button class="filtro-btn" onclick="filtrarPedidos('enviado')">🚚 Enviados</button>
-        <button class="filtro-btn" onclick="filtrarPedidos('entregue')">✅ Entregues</button>
-        <button class="filtro-btn" onclick="filtrarPedidos('cancelado')">❌ Cancelados</button>
+    <button class="filtro-btn ativo" onclick="filtrarPedidos('todos', event)">Todos</button>
+    <button class="filtro-btn" onclick="filtrarPedidos('pagamento_pendente', event)">⏳ Pendentes</button>
+    <button class="filtro-btn" onclick="filtrarPedidos('pago', event)">💰 Pagos</button>
+    <button class="filtro-btn" onclick="filtrarPedidos('enviado', event)">🚚 Enviados</button>
+    <button class="filtro-btn" onclick="filtrarPedidos('entregue', event)">✅ Entregues</button>
+    <button class="filtro-btn" onclick="filtrarPedidos('cancelado', event)">❌ Cancelados</button>
     </div>
     
     <div id="pedidos-container" class="pedidos-grid">
