@@ -105,17 +105,60 @@ function exibirPedidos(pedidos) {
     `).join('');
 }
 
+// ====================== ATUALIZAR STATUS (VERSÃO URGENTE) ======================
+
 async function atualizarStatus(compraId) {
+    console.log("🔄 Atualizando status do pedido", compraId);
+    
     const select = document.getElementById(`status-${compraId}`);
+    if (!select) {
+        alert('❌ Erro: elemento não encontrado');
+        return;
+    }
+    
     const novoStatus = select.value;
     
-    await fetch(`${API}/admin/atualizar_status`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ compra_id: compraId, status: novoStatus })
-    });
+    if (!confirm(`Alterar status do pedido #${compraId} para ${novoStatus}?`)) {
+        // Volta o select para o valor anterior
+        select.value = select.getAttribute('data-valor-original') || select.value;
+        return;
+    }
     
-    carregarPedidos();
+    // Guarda o valor original
+    select.setAttribute('data-valor-original', select.value);
+    
+    try {
+        console.log("📦 Enviando:", { compra_id: compraId, status: novoStatus });
+        
+        const response = await fetch(`${API}/admin/atualizar_status`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                compra_id: compraId, 
+                status: novoStatus 
+            })
+        });
+        
+        console.log("📨 Status da resposta:", response.status);
+        
+        const data = await response.json();
+        console.log("📨 Resposta:", data);
+        
+        if (response.ok) {
+            alert('✅ Status atualizado com sucesso!');
+        } else {
+            alert(`❌ Erro: ${data.erro || 'Erro desconhecido'}`);
+            // Reverte o select
+            select.value = select.getAttribute('data-valor-original');
+        }
+    } catch (error) {
+        console.error('❌ Erro no fetch:', error);
+        alert('❌ Erro ao conectar com o servidor');
+        // Reverte o select
+        select.value = select.getAttribute('data-valor-original');
+    }
 }
 
 // Atalho Enter

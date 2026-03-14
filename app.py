@@ -458,28 +458,38 @@ def admin_detalhes_compra(compra_id):
         logger.error(f"Erro em admin_detalhes_compra: {e}")
         return jsonify({"erro": str(e)}), 500
 
-@app.route('/admin/atualizar_status', methods=['POST'])
+@app.route('/admin/atualizar_status', methods=['POST', 'OPTIONS'])
 def admin_atualizar_status():
+    # Resposta para CORS preflight
+    if request.method == 'OPTIONS':
+        response = make_response()
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type")
+        response.headers.add("Access-Control-Allow-Methods", "POST")
+        return response, 200
+
     try:
         dados = request.get_json()
+        print("📦 Dados recebidos (status):", dados)
+        
         compra_id = dados.get('compra_id')
         novo_status = dados.get('status')
+        
         if not compra_id or not novo_status:
-            return jsonify({"erro": "compra_id e status obrigatórios"}), 400
-        status_validos = ['pagamento_pendente', 'pago', 'enviado', 'entregue', 'cancelado']
-        if novo_status not in status_validos:
-            return jsonify({"erro": "Status inválido"}), 400
-        with get_db_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute('''
-                UPDATE compras SET status = ?, ultima_atualizacao = CURRENT_TIMESTAMP WHERE id = ?
-            ''', (novo_status, compra_id))
-            if cursor.rowcount == 0:
-                return jsonify({"erro": "Compra não encontrada"}), 404
-        logger.info(f"Status da compra #{compra_id} alterado para {novo_status}")
-        return jsonify({"sucesso": True}), 200
+            return jsonify({"erro": "Campos obrigatórios"}), 400
+        
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute('''
+            UPDATE compras SET status = ? WHERE id = ?
+        ''', (novo_status, compra_id))
+        conn.commit()
+        conn.close()
+        
+        return jsonify({"sucesso": True, "mensagem": "Status atualizado!"}), 200
+        
     except Exception as e:
-        logger.error(f"Erro em admin_atualizar_status: {e}")
+        print(f"❌ Erro: {e}")
         return jsonify({"erro": str(e)}), 500
 
 @app.route('/admin/adicionar_observacao', methods=['POST'])
