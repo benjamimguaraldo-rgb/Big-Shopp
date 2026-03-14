@@ -1,5 +1,5 @@
 // ====================== ADMIN-ENTREGAS.JS ======================
-const API = "https://big-shopp.onrender.com";
+
 let todosPedidos = [];
 
 // ====================== SISTEMA DE BLOQUEIO ======================
