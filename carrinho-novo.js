@@ -4,18 +4,70 @@ let produtosCarrinho = [];
 
 // ====================== CARREGAR CARRINHO ======================
 
+// ====================== VERIFICAÇÃO DE SENHA NO CARRINHO ======================
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("📄 Página do carrinho carregada");
+    
     const senhaSalva = localStorage.getItem('senha_carrinho');
     
     if (!senhaSalva) {
-        alert('🔐 Você precisa criar uma senha primeiro!');
-        window.location.href = 'produtos.html';
+        // 👉 MOSTRA A TELA DE CRIAÇÃO DE SENHA
+        mostrarTelaCriarSenha();
+    } else {
+        senhaAtual = senhaSalva;
+        carregarCarrinhoServidor(senhaSalva);
+    }
+});
+
+function mostrarTelaCriarSenha() {
+    // Esconde o conteúdo do carrinho
+    document.getElementById('conteudo-carrinho').style.display = 'none';
+    
+    // Cria a tela de criação de senha (se não existir)
+    if (!document.getElementById('tela-criar-senha')) {
+        const body = document.body;
+        const div = document.createElement('div');
+        div.id = 'tela-criar-senha';
+        div.className = 'tela-senha';
+        div.innerHTML = `
+            <div class="senha-card">
+                <h2>🔐 Criar Senha</h2>
+                <p>Digite uma senha de 4 dígitos para acessar seu carrinho:</p>
+                <input type="password" id="nova-senha-input" class="senha-input" maxlength="4" placeholder="0000">
+                <button onclick="criarSenhaCarrinho()" class="btn-senha">Criar Senha</button>
+                <p id="senha-erro" class="senha-erro"></p>
+            </div>
+        `;
+        body.appendChild(div);
+    } else {
+        document.getElementById('tela-criar-senha').style.display = 'flex';
+    }
+}
+
+// Função para criar nova senha
+async function criarSenhaCarrinho() {
+    const senha = document.getElementById('nova-senha-input').value;
+    const erroEl = document.getElementById('senha-erro');
+    
+    if (!senha || senha.length !== 4 || isNaN(senha)) {
+        erroEl.textContent = '❌ Digite uma senha válida de 4 dígitos';
         return;
     }
     
-    senhaAtual = senhaSalva;
-    carregarCarrinhoServidor(senhaSalva);
-});
+    // Salva no localStorage
+    localStorage.setItem('senha_carrinho', senha);
+    senhaAtual = senha;
+    
+    // Esconde tela de criação
+    document.getElementById('tela-criar-senha').style.display = 'none';
+    
+    // Carrega carrinho (vazio)
+    await carregarCarrinhoServidor(senha);
+    
+    // Mostra conteúdo do carrinho
+    document.getElementById('conteudo-carrinho').style.display = 'block';
+}
 
 async function carregarCarrinhoServidor(senha) {
     try {
@@ -166,6 +218,47 @@ async function verificarSenhaCarrinho() {
     if (telaSenha) telaSenha.style.display = 'none';
     if (conteudoCarrinho) conteudoCarrinho.style.display = 'block';
 }
+
+// ====================== LIMPAR CARRINHO ======================
+
+async function limparCarrinho() {
+    console.log("🗑️ Limpando carrinho...");
+    
+    if (!confirm('Tem certeza que deseja limpar todo o carrinho?')) {
+        return;
+    }
+    
+    if (!senhaAtual) {
+        alert('❌ Nenhuma senha encontrada!');
+        return;
+    }
+    
+    try {
+        // Limpa o array de produtos
+        produtosCarrinho = [];
+        
+        // Salva no servidor (carrinho vazio)
+        await fetch(`${API}/carrinho/salvar`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                senha: senhaAtual,
+                produtos: []
+            })
+        });
+        
+        // Atualiza a tela
+        exibirCarrinho();
+        
+        alert('✅ Carrinho limpo com sucesso!');
+    } catch (error) {
+        console.error('❌ Erro ao limpar carrinho:', error);
+        alert('Erro ao limpar carrinho');
+    }
+}
+
+// Torna a função global
+window.limparCarrinho = limparCarrinho;
 
 // Torna a função global
 window.verificarSenhaCarrinho = verificarSenhaCarrinho;
